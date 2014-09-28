@@ -104,4 +104,8 @@ public class Project {
 		} else {
 		}
 	}
+
+	public ProjectTyp getProjectTyp() {
+		return this.projectTyp;
+	}
 }

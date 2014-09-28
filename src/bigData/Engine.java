@@ -269,7 +269,7 @@ public class Engine {
 
 			System.out.println(typ);
 			for (Project p : history) {
-				if (typ.equals(p)) {
+				if (typ.equals(p.getProjectTyp())) {
 					System.out.println("[H=1] " + p);
 					points += 1;
 				} else {

@@ -52,4 +52,14 @@ public class ProjectTyp {
 			project.linkProjectTyp(this);
 		}
 	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		if (arg0 instanceof ProjectTyp
+				&& ((ProjectTyp) arg0).getDescription().equals(description)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
