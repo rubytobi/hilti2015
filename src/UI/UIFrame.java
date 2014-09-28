@@ -62,6 +62,7 @@ public class UIFrame extends JFrame implements ItemListener {
 
 	private JCheckBox chckbxShowTools;
 	private JCheckBox chckbxShowProjects;
+	private JList lstProjects;
 
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
@@ -179,20 +180,18 @@ public class UIFrame extends JFrame implements ItemListener {
 		chckbxShowProjects = new JCheckBox("show projects");
 		chckbxShowProjects.addItemListener(this);
 		pnlMapControls.add(chckbxShowProjects);
-
+		
 		JPanel pnlProjects = new JPanel();
-		pnlProjects.setLayout(null);
 		pnlProjects.setBorder(new TitledBorder(UIManager
-
-		.getBorder("TitledBorder.border"), "Located projects",
-
-		TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlProjects.setBounds(614, 279, 262, 123);
+						.getBorder("TitledBorder.border"), "Located Stores",
+						TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlProjects.setBounds(622, 279, 262, 123);
 		pnlMain.add(pnlProjects);
+		pnlProjects.setLayout(new BorderLayout(0, 0));
+		
+		lstProjects = new JList();
+		pnlProjects.add(lstProjects, BorderLayout.CENTER);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 16, 250, 100);
-		pnlProjects.add(scrollPane);
 
 		listStores.addMouseListener(new MouseAdapter() {
 			@Override
