@@ -118,6 +118,14 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		valLocation = new JLabel(project.getLocation().toString());
 		pnlLocation.add(valLocation);
+		
+		JPanel pnlFleet = new JPanel();
+		pnlFleet.setBackground(UIManager.getColor("CheckBox.select"));
+		pnlDetail.add(pnlFleet);
+		
+		JLabel valFleet = new JLabel("no fleet user");
+		valFleet.setFont(new Font("Tahoma", Font.BOLD, 11));
+		pnlFleet.add(valFleet);
 
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
@@ -130,15 +138,15 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		scrollPaneDevices.setPreferredSize(new Dimension(400, 100));
 		pnlInfo.add(scrollPaneDevices);
 
-		JLabel lblRec = new JLabel("recommendations based on project");
-		lblRec.setForeground(new Color(100, 149, 237));
-		lblRec.setFont(new Font("Lucida Grande", Font.BOLD, 15));
-		lblRec.setAlignmentX(Component.CENTER_ALIGNMENT);
-		pnlInfo.add(lblRec);
+		JLabel lblService = new JLabel("Device service history");
+		lblService.setForeground(new Color(100, 149, 237));
+		lblService.setFont(new Font("Lucida Grande", Font.BOLD, 15));
+		lblService.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pnlInfo.add(lblService);
 
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion" }));
+				new String[] { "ArtNo", "Descritpion","Price" }));
 		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
 
