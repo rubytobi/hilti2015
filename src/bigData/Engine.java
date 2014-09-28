@@ -361,6 +361,30 @@ public class Engine {
 		return missing;
 	}
 
+	public static double calculateTotalPrice(Project project) {
+		double summe = 0;
+
+		for (Device d : project.getDevices()) {
+			d.getPrice();
+		}
+
+		return summe;
+	}
+
+	public static double calculateTotalPriceFM(Project project) {
+		double summe = 0;
+
+		for (Device d : project.getDevices()) {
+			d.getPriceFM();
+		}
+
+		return summe;
+	}
+
+	public static double calculateFM(double price) {
+		return price / 2 * 10;
+	}
+
 	public static List<Recommendation> generateRec(Project project) {
 		List<Recommendation> recs = new ArrayList<Recommendation>();
 
@@ -370,15 +394,21 @@ public class Engine {
 		for (Device d : missing) {
 			recs.add(new Recommendation(1, d));
 
-			// geä
+			// geräte aus der gleichen produktlinie
 			List<Device> similar = devicesFromProductLine(d.getBezeichnung());
 
 			for (Device sD : similar) {
-				// recs.add(new Recommendation(0.5, sD));
+				if (!sD.equals(d)) {
+					recs.add(new Recommendation(0.5, sD));
+				}
+
 			}
 		}
 
-		// geräte filtern die unbenutzt in stores lagern
+		Collections.sort(recs);
+
+		// geräte die in stores lagern werden ausgefiltert
+		// TODO aber nicht jetzt
 
 		return recs;
 	}

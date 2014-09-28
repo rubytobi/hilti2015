@@ -235,7 +235,7 @@ public class HILTITool {
 
 	private void loadDevices(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
-		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID FROM Geraet";
+		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID, PreisEinzel, PreisFlotte FROM Geraet";
 		ResultSet rs = stmt.executeQuery(sql);
 
 		while (rs.next()) {
@@ -245,9 +245,11 @@ public class HILTITool {
 			boolean zubehoer = rs.getBoolean("Zubehoer");
 			int kundeID = rs.getInt("KundeID");
 			int projectTypId = rs.getInt("ProjektTypID");
+			int price = rs.getInt("PreisEinzel");
+			int priceFM = rs.getInt("PreisFlotte");
 
 			Device d = new Device(id, artNr, bezeichnung, zubehoer,
-					projectTypId);
+					projectTypId, price, priceFM);
 
 			Customer c = findCustomer(kundeID);
 			if (c != null) {

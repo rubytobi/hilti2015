@@ -13,6 +13,8 @@ public class Device {
 	private Customer customer;
 	private Project project;
 	private ProjectTyp projectTyp;
+	private double price;
+	private double priceFM;
 
 	public int getId() {
 		return id;
@@ -55,15 +57,18 @@ public class Device {
 
 	@Override
 	public String toString() {
-		return "[" + id + "] " + artNr + " - " + description + " " + zubehoer;
+		return "[" + id + "] " + artNr + " - " + description + " " + zubehoer
+				+ " " + price + "€/Einh. " + priceFM + "€/FM";
 	}
 
 	public Device(int id, String artNr, String bezeichnung, boolean zubehoer,
-			int projectTypId) {
+			int projectTypId, double price, double priceFM) {
 		this.id = id;
 		this.artNr = artNr;
 		this.description = bezeichnung;
 		this.zubehoer = zubehoer;
+		this.price = price;
+		this.priceFM = priceFM;
 	}
 
 	public boolean isZubehoer() {
@@ -126,6 +131,14 @@ public class Device {
 
 	public String getScope() {
 		return this.description;
+	}
+
+	public double getPrice() {
+		return this.price;
+	}
+
+	public double getPriceFM() {
+		return this.priceFM;
 	}
 
 }

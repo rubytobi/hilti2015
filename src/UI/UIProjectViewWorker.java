@@ -138,8 +138,8 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Descritpion" }));
-		tableRec.getColumnModel().getColumn(1).setPreferredWidth(80);
-		tableRec.getColumnModel().getColumn(2).setPreferredWidth(140);
+		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
+		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
 		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
