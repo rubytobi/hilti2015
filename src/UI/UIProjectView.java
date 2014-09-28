@@ -4,26 +4,16 @@ import hilti.HILTITool;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
-
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.GridLayout;
-
 import javax.swing.JPanel;
-
 import java.awt.BorderLayout;
-
 import javax.swing.JLabel;
-
 import java.awt.Font;
-
 import javax.swing.SwingConstants;
-
 import bigData.Cluster;
-import bigData.Engine;
-
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
 import com.teamdev.jxbrowser.chromium.events.FailLoadingEvent;
@@ -33,30 +23,21 @@ import com.teamdev.jxbrowser.chromium.events.LoadEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadListener;
 import com.teamdev.jxbrowser.chromium.events.ProvisionalLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
-
 import datatypes.Customer;
 import datatypes.Device;
 import datatypes.Project;
-import datatypes.ProjectTyp;
-
 import java.awt.SystemColor;
-
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
-
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
-
 import javax.swing.JButton;
-
 import java.awt.FlowLayout;
-
 import javax.swing.JComboBox;
-
 import java.awt.Color;
 
 public class UIProjectView extends JFrame implements LoadListener {
@@ -70,10 +51,6 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private JTable tableDevices;
 	private JTable tableRec;
 	private Project project;
-	private JLabel valOldProjects;
-	private JLabel valSameDevices;
-	private JLabel valLocation;
-	private JLabel valProjectType;
 
 	public UIProjectView(Project p) throws HeadlessException {
 		super("Project recognized!");
@@ -121,7 +98,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlType.add(lblType);
 
-		valProjectType = new JLabel();
+		JLabel valProjectType = new JLabel("Hoch- und Tiefbau");
 		pnlType.add(valProjectType);
 
 		JPanel pnlLocation = new JPanel();
@@ -131,13 +108,14 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblLocation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlLocation.add(lblLocation);
 
-		valLocation = new JLabel();
+		JLabel valLocation = new JLabel(project.getLocation().toString());
 		pnlLocation.add(valLocation);
 
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Description" }));
 		tableDevices.getColumnModel().getColumn(0).setPreferredWidth(80);
+		addToolsToTable(project.getDevices());
 
 		JScrollPane scrollPaneDevices = new JScrollPane(tableDevices);
 		scrollPaneDevices.setPreferredSize(new Dimension(400, 100));
@@ -151,10 +129,9 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion", "Status", "%" }));
+				new String[] { "ArtNo", "Descritpion" }));
 		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
-		tableRec.getColumnModel().getColumn(3).setPreferredWidth(25);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
 		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
@@ -168,7 +145,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
 
-		valOldProjects = new JLabel();
+		JLabel valOldProjects = new JLabel("5/6 projects of the same type");
 		pnlOldProjects.add(valOldProjects);
 
 		JPanel pnlSameDevices = new JPanel();
@@ -179,7 +156,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblSameDevices.setForeground(new Color(100, 149, 237));
 		pnlSameDevices.add(lblSameDevices);
 
-		valSameDevices = new JLabel();
+		JLabel valSameDevices = new JLabel("4/7 devices match project type");
 		pnlSameDevices.add(valSameDevices);
 
 		JLabel label = new JLabel("87%");
@@ -192,7 +169,6 @@ public class UIProjectView extends JFrame implements LoadListener {
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
 		setLocationRelativeTo(null);
-		update();
 		this.setVisible(true);
 	}
 
@@ -249,40 +225,8 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 	}
 
-	private void calculateOldProjects() {
-		Customer c = project.getCustomer();
-		List<Project> projects = c.getProjects();
-		String var = "";
-		ProjectTyp ref = project.getProjectTyp();
-		int i = 0;
-
-		for (Project p : projects) {
-			if (ref.equals(p.getProjectTyp())) {
-				i++;
-			}
-		}
-
-		var += i + "/" + projects.size() + " projects of the same type";
-		this.valOldProjects.setText(var);
-	}
-
-	private void calculateSameDevices() {
-		String var = "";
-		int i = 0;
-		ProjectTyp typ = project.getProjectTyp();
-
-		for (Device d : project.getDevices()) {
-			if (typ.getDevices().contains(d)) {
-				i++;
-			}
-		}
-
-		var += i + "/" + project.getDevices().size()
-				+ " devices match project type";
-		this.valSameDevices.setText(var);
-	}
-
 	public void update() {
+<<<<<<< HEAD
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
 		calculateSameDevices();
@@ -296,8 +240,17 @@ public class UIProjectView extends JFrame implements LoadListener {
 		List<Device> missing = Engine.detectMissingDevices(project);
 		missing = Engine.filterDevicesInStore(
 				project.getCustomer().getStores(), missing);
+=======
+		List<Device> allDevices = project.getProjectTyp().getDevices();
+		allDevices.removeAll(project.getDevices());
+		
+		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
+		for(Device d: allDevices){
+			dtm.addRow(rowData)
+		}
+		
+>>>>>>> origin/master
 
-		// TODO
 	}
 
 }
