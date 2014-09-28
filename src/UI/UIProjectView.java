@@ -55,6 +55,9 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private JTable tableDevices;
 	private JTable tableRec;
 	private Project project;
+	private JLabel valOldProjects;
+	private JLabel valLocation;
+	private JLabel valProjectType;
 
 	public UIProjectView(Project p) throws HeadlessException {
 		super("Project recognized!");
@@ -102,7 +105,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlType.add(lblType);
 
-		JLabel valProjectType = new JLabel("Hoch- und Tiefbau");
+		valProjectType = new JLabel("Hoch- und Tiefbau");
 		pnlType.add(valProjectType);
 
 		JPanel pnlLocation = new JPanel();
@@ -112,7 +115,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblLocation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlLocation.add(lblLocation);
 
-		JLabel valLocation = new JLabel(project.getLocation().toString());
+		valLocation = new JLabel(project.getLocation().toString());
 		pnlLocation.add(valLocation);
 
 		tableDevices = new JTable();
@@ -149,7 +152,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
 
-		JLabel valOldProjects = new JLabel(Engine.getNumberOfProjectsInSameCat(project)+ "/" +project.getCustomer().getProjects().size()+" projects of the same type");
+		valOldProjects = new JLabel("5/6 projects of the same type");
 		pnlOldProjects.add(valOldProjects);
 
 		JPanel pnlSameDevices = new JPanel();
@@ -232,35 +235,27 @@ public class UIProjectView extends JFrame implements LoadListener {
 	}
 
 	public void update() {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
-		calculateSameDevices();
+		//calculateSameDevices();
 		putMissingDevices();
 
 		this.valLocation.setText(project.getLocation().toString());
 		this.valProjectType.setText(project.getProjectTyp().getDescription());
 	}
 
-	private void putMissingDevices() {
-		List<Device> missing = Engine.detectMissingDevices(project);
-		missing = Engine.filterDevicesInStore(
-				project.getCustomer().getStores(), missing);
-=======
-		List<Device> allDevices = project.getProjectTyp().getDevices();
-		allDevices.removeAll(project.getDevices());
->>>>>>> FETCH_HEAD
+	private void calculateOldProjects() {
+		valOldProjects.setText(Engine.getNumberOfProjectsInSameCat(project)+ "/" +project.getCustomer().getProjects().size()+" projects of the same type");
 		
+	}
+
+	private void putMissingDevices() {
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
 		List<Device> missing = Engine.detectMissingDevices(project);
 		
 		for(Device d: missing){
 			dtm.addRow(new Object[]{d.getArtNr(),d.getBezeichnung()});
 		}
-		
->>>>>>> origin/master
 
 	}
 
