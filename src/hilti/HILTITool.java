@@ -16,6 +16,8 @@ import datatypes.ProjectTyp;
 import datatypes.Store;
 import UI.UIFrame;
 import UI.UILogin;
+import UI.UIProjectRecognized;
+import UI.UIProjectView;
 import bigData.Cluster;
 import bigData.Engine;
 import datatypes.Location;
@@ -29,6 +31,10 @@ public class HILTITool {
 	public static List<Cluster> clusters = new ArrayList<Cluster>();
 	public static List<Store> stores = new ArrayList<Store>();
 	public static List<ProjectTyp> projecttypes = new ArrayList<ProjectTyp>();
+	public static UIFrame uiframe = null;
+	public static UILogin uilogin = null;
+	public static UIProjectRecognized uiprojectrecognized = null;
+	public static UIProjectView uiprojectview = null;
 
 	public static void main(String[] args) {
 		new HILTITool();

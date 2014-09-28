@@ -305,4 +305,9 @@ public class UIProjectRecognized extends JFrame implements LoadListener {
 
 	}
 
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

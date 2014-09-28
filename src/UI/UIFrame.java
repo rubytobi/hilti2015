@@ -237,7 +237,7 @@ public class UIFrame extends JFrame implements ItemListener {
 	public void itemStateChanged(ItemEvent ie) {
 		toggleMarkers();
 	}
-	
+
 	private void toggleMarkers() {
 		if (chckbxShowProjects.isSelected()) {
 			browser.executeJavaScript("markersOn(" + ")");
@@ -256,8 +256,12 @@ public class UIFrame extends JFrame implements ItemListener {
 		}
 
 		for (Device d : devices) {
-			model.addRow(new String[] { d.getArtNr(),
-					String.valueOf(d.getCustomer().getId()), "" });
+			if (d.getCustomer() == null) {
+				model.addRow(new String[] { d.getArtNr(), "-", "-" });
+			} else {
+				model.addRow(new String[] { d.getArtNr(),
+						String.valueOf(d.getCustomer().getId()), "-" });
+			}
 		}
 
 	}

@@ -52,11 +52,10 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private JTable tableRec;
 	private Project project;
 
-	public UIProjectView(Project p)
-			throws HeadlessException {
+	public UIProjectView(Project p) throws HeadlessException {
 		super("Project recognized!");
 		setTitle("Project Based RecEngine");
-		
+
 		this.project = p;
 
 		// SET SYSTEM LOOK AND FEEL
@@ -79,7 +78,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		// SET THE MAP VIEW AND PAN TO LOCATION
 		JPanel pnlMap = new JPanel(new BorderLayout());
-		pnlMap.setPreferredSize(new Dimension(400,200));
+		pnlMap.setPreferredSize(new Dimension(400, 200));
 		pnlCenter.add(pnlMap);
 		pnlMap.add(browser.getView().getComponent(), BorderLayout.CENTER);
 
@@ -98,7 +97,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		JLabel lblType = new JLabel("Project type:");
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlType.add(lblType);
-		
+
 		JLabel valProjectType = new JLabel("Hoch- und Tiefbau");
 		pnlType.add(valProjectType);
 
@@ -119,48 +118,48 @@ public class UIProjectView extends JFrame implements LoadListener {
 		addToolsToTable(project.getDevices());
 
 		JScrollPane scrollPaneDevices = new JScrollPane(tableDevices);
-		scrollPaneDevices.setPreferredSize(new Dimension(400,100));
+		scrollPaneDevices.setPreferredSize(new Dimension(400, 100));
 		pnlInfo.add(scrollPaneDevices);
-		
+
 		JLabel lblRec = new JLabel("recommendations based on project");
 		lblRec.setForeground(new Color(100, 149, 237));
 		lblRec.setFont(new Font("Lucida Grande", Font.BOLD, 15));
 		lblRec.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pnlInfo.add(lblRec);
-		
+
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion","Status","%" }));
+				new String[] { "ArtNo", "Descritpion", "Status", "%" }));
 		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
 		tableRec.getColumnModel().getColumn(3).setPreferredWidth(25);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
-		scrollPaneRec.setPreferredSize(new Dimension(400,100));
+		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
 		pnlInfo.add(scrollPaneRec);
-		
+
 		JPanel pnlOldProjects = new JPanel();
 		pnlInfo.add(pnlOldProjects);
-		
+
 		JLabel lblOldProjects = new JLabel("Old projects:");
 		lblOldProjects.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
-		
+
 		JLabel valOldProjects = new JLabel("5/6 projects of the same type");
 		pnlOldProjects.add(valOldProjects);
-		
+
 		JPanel pnlSameDevices = new JPanel();
 		pnlInfo.add(pnlSameDevices);
-		
+
 		JLabel lblSameDevices = new JLabel("Devices:");
 		lblSameDevices.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		lblSameDevices.setForeground(new Color(100, 149, 237));
 		pnlSameDevices.add(lblSameDevices);
-		
+
 		JLabel valSameDevices = new JLabel("4/7 devices match project type");
 		pnlSameDevices.add(valSameDevices);
-		
+
 		JLabel label = new JLabel("87%");
 		label.setForeground(new Color(60, 179, 113));
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -224,6 +223,11 @@ public class UIProjectView extends JFrame implements LoadListener {
 		for (Device d : devices) {
 			model.addRow(new String[] { d.getArtNr(), d.getScope() });
 		}
+
+	}
+
+	public void update() {
+		// TODO Auto-generated method stub
 
 	}
 

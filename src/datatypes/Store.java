@@ -9,7 +9,8 @@ public class Store {
 	public static ArrayList<Store> storeList = new ArrayList<Store>();
 	private List<Device> devices = new ArrayList<Device>();
 
-	public Store() {
+	public Store(int id) {
+		this.id = id;
 	}
 
 	public Location getLocation() {

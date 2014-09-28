@@ -150,7 +150,7 @@ public class Engine {
 			}
 
 			if (volitility == 0) {
-				Store s = new Store();
+				Store s = new Store(c.getId());
 				s.linkLocation(c.getCenter());
 
 				HILTITool.stores.add(s);
