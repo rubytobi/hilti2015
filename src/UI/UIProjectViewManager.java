@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 import java.awt.Component;
 import java.util.List;
 import java.awt.Color;
+import java.awt.SystemColor;
 
 public class UIProjectViewManager extends JFrame implements LoadListener {
 
@@ -50,14 +51,12 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
 	private JTable tableDevices;
-	private JTable tableRec;
+	private JTable tableService;
 	private Project project;
-	private JLabel valOldProjects;
 	private JLabel valLocation;
 	private JLabel valProjectType;
-	private JLabel valSameDevices;
 	private Rank rank;
-	private JLabel label;
+	private JLabel valSavings;
 
 	public UIProjectViewManager(Project p, Rank r) throws HeadlessException {
 		super("Project recognized!");
@@ -129,7 +128,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Description","Price","PriceFleet" }));
+				new String[] { "ArtNo", "Description","PriceRetail","PriceFleet" }));
 		tableDevices.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableDevices.getColumnModel().getColumn(1).setPreferredWidth(150);
 		addToolsToTable(project.getDevices());
@@ -144,42 +143,48 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		lblService.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pnlInfo.add(lblService);
 
-		tableRec = new JTable();
-		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion","Price" }));
-		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
-		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
+		tableService = new JTable();
+		tableService.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "ArtNo", "Descritpion","Type","Price" }));
+		tableService.getColumnModel().getColumn(0).setPreferredWidth(80);
+		tableService.getColumnModel().getColumn(1).setPreferredWidth(140);
 
-		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
-		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
-		pnlInfo.add(scrollPaneRec);
+		JScrollPane scrollPaneService = new JScrollPane(tableService);
+		scrollPaneService.setPreferredSize(new Dimension(400, 100));
+		pnlInfo.add(scrollPaneService);
 
 		JPanel pnlOldProjects = new JPanel();
 		pnlInfo.add(pnlOldProjects);
 
-		JLabel lblOldProjects = new JLabel("Old projects:");
-		lblOldProjects.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblOldProjects.setForeground(new Color(100, 149, 237));
-		pnlOldProjects.add(lblOldProjects);
-
-		valOldProjects = new JLabel();
-		pnlOldProjects.add(valOldProjects);
+		JLabel lblDuration = new JLabel("If your project duration is ");
+		lblDuration.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		lblDuration.setForeground(Color.BLACK);
+		pnlOldProjects.add(lblDuration);
+		
+		JLabel valDuration = new JLabel("less than 14 days");
+		valDuration.setForeground(new Color(60, 179, 113));
+		valDuration.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+		pnlOldProjects.add(valDuration);
 
 		JPanel pnlSameDevices = new JPanel();
 		pnlInfo.add(pnlSameDevices);
 
-		JLabel lblSameDevices = new JLabel("Devices:");
-		lblSameDevices.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-		lblSameDevices.setForeground(new Color(100, 149, 237));
+		JLabel lblSameDevices = new JLabel("you should switch to our Fleetservice");
+		lblSameDevices.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		lblSameDevices.setForeground(new Color(0, 0, 0));
 		pnlSameDevices.add(lblSameDevices);
 
-		valSameDevices = new JLabel();
-		pnlSameDevices.add(valSameDevices);
-
-		label = new JLabel();
-		label.setAlignmentX(Component.CENTER_ALIGNMENT);
-		label.setFont(new Font("Lucida Grande", Font.BOLD, 26));
-		pnlInfo.add(label);
+		valSavings = new JLabel();
+		valSavings.setForeground(new Color(60, 179, 113));
+		valSavings.setAlignmentX(Component.CENTER_ALIGNMENT);
+		valSavings.setFont(new Font("Lucida Grande", Font.BOLD, 26));
+		pnlInfo.add(valSavings);
+		
+		JLabel lblSavingsForAn = new JLabel("saved for an average project length of 12 days");
+		lblSavingsForAn.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblSavingsForAn.setForeground(Color.BLACK);
+		lblSavingsForAn.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
+		pnlInfo.add(lblSavingsForAn);
 
 		JPanel pnlSouth = new JPanel();
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
@@ -256,23 +261,23 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 	}
 
 	public void setPercentage(double d) {
-		label.setText(d + "%");
+		valSavings.setText("2314.20\u20AC");
 
 		if (d > 75) {
-			label.setForeground(new Color(60, 179, 113));
+			valSavings.setForeground(new Color(60, 179, 113));
 		} else if (d < 75 && d > 25) {
 			// TODO
-			label.setForeground(new Color(60, 179, 113));
+			valSavings.setForeground(new Color(60, 179, 113));
 		} else {
 			// TODO
-			label.setForeground(new Color(60, 179, 113));
+			valSavings.setForeground(new Color(60, 179, 113));
 		}
 	}
 
 	private void putRecommendations() {
 		List<Recommendation> recs = Engine.generateRec(project);
 
-		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
+		DefaultTableModel dtm = (DefaultTableModel) tableService.getModel();
 
 		for (Recommendation r : recs) {
 			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
@@ -291,15 +296,9 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 				score++;
 		}
 
-		valSameDevices.setText(score + "/" + pDevices.size()
-				+ " match project type");
-
 	}
 
 	private void calculateOldProjects() {
-		valOldProjects.setText(Engine.getNumberOfProjectsInSameCat(project)
-				+ "/" + project.getCustomer().getProjects().size()
-				+ " projects of the same type");
 
 	}
 }
