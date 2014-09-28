@@ -58,6 +58,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private JLabel valOldProjects;
 	private JLabel valLocation;
 	private JLabel valProjectType;
+	private JLabel valSameDevices;
 
 	public UIProjectView(Project p) throws HeadlessException {
 		super("Project recognized!");
@@ -163,7 +164,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblSameDevices.setForeground(new Color(100, 149, 237));
 		pnlSameDevices.add(lblSameDevices);
 
-		JLabel valSameDevices = new JLabel("4/7 devices match project type");
+		valSameDevices = new JLabel("4/7 devices match project type");
 		pnlSameDevices.add(valSameDevices);
 
 		JLabel label = new JLabel("87%");
@@ -237,11 +238,25 @@ public class UIProjectView extends JFrame implements LoadListener {
 	public void update() {
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
-		//calculateSameDevices();
+		calculateSameDevices();
 		putMissingDevices();
 
 		this.valLocation.setText(project.getLocation().toString());
 		this.valProjectType.setText(project.getProjectTyp().getDescription());
+	}
+
+	private void calculateSameDevices() {
+		List<Device> pDevices = project.getDevices();
+		List<Device> ptDevices = project.getProjectTyp().getDevices();
+		
+		int score = 0;
+		
+		for(Device d:pDevices){
+			if(ptDevices.contains(d)) score++;
+		}
+		
+		valSameDevices.setText(score + "/"+pDevices.size()+" match project type");
+		
 	}
 
 	private void calculateOldProjects() {
