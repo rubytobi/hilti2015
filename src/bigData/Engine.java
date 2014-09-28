@@ -343,4 +343,20 @@ public class Engine {
 
 		return missing;
 	}
+
+	public static List<Device> filterDevicesInStore(List<Store> stores,
+			List<Device> missing) {
+		List<Device> filtered = new ArrayList<Device>();
+		filtered.addAll(missing);
+
+		for (Device d : missing) {
+			for (Store s : stores) {
+				if (s.getDevices().contains(d)) {
+					filtered.remove(d);
+				}
+			}
+		}
+
+		return filtered;
+	}
 }

@@ -232,6 +232,26 @@ public class UIProjectView extends JFrame implements LoadListener {
 	}
 
 	public void update() {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+		addToolsToTable(project.getDevices());
+		calculateOldProjects();
+		calculateSameDevices();
+		putMissingDevices();
+
+		this.valLocation.setText(project.getLocation().toString());
+		this.valProjectType.setText(project.getProjectTyp().getDescription());
+	}
+
+	private void putMissingDevices() {
+		List<Device> missing = Engine.detectMissingDevices(project);
+		missing = Engine.filterDevicesInStore(
+				project.getCustomer().getStores(), missing);
+=======
+		List<Device> allDevices = project.getProjectTyp().getDevices();
+		allDevices.removeAll(project.getDevices());
+>>>>>>> FETCH_HEAD
 		
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
 		List<Device> missing = Engine.detectMissingDevices(project);
@@ -240,6 +260,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 			dtm.addRow(new Object[]{d.getArtNr(),d.getBezeichnung()});
 		}
 		
+>>>>>>> origin/master
 
 	}
 
