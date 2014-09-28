@@ -71,6 +71,8 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private Project project;
 	private JLabel valOldProjects;
 	private JLabel valSameDevices;
+	private JLabel valLocation;
+	private JLabel valProjectType;
 
 	public UIProjectView(Project p) throws HeadlessException {
 		super("Project recognized!");
@@ -118,7 +120,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlType.add(lblType);
 
-		JLabel valProjectType = new JLabel("Hoch- und Tiefbau");
+		valProjectType = new JLabel();
 		pnlType.add(valProjectType);
 
 		JPanel pnlLocation = new JPanel();
@@ -128,7 +130,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblLocation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlLocation.add(lblLocation);
 
-		JLabel valLocation = new JLabel(project.getLocation().toString());
+		valLocation = new JLabel();
 		pnlLocation.add(valLocation);
 
 		tableDevices = new JTable();
@@ -165,7 +167,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
 
-		valOldProjects = new JLabel("5/6 projects of the same type");
+		valOldProjects = new JLabel();
 		pnlOldProjects.add(valOldProjects);
 
 		JPanel pnlSameDevices = new JPanel();
@@ -176,7 +178,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblSameDevices.setForeground(new Color(100, 149, 237));
 		pnlSameDevices.add(lblSameDevices);
 
-		valSameDevices = new JLabel("4/7 devices match project type");
+		valSameDevices = new JLabel();
 		pnlSameDevices.add(valSameDevices);
 
 		JLabel label = new JLabel("87%");
@@ -263,9 +265,29 @@ public class UIProjectView extends JFrame implements LoadListener {
 		this.valOldProjects.setText(var);
 	}
 
+	private void calculateSameDevices() {
+		String var = "";
+		int i = 0;
+		ProjectTyp typ = project.getProjectTyp();
+
+		for (Device d : project.getDevices()) {
+			if (typ.getDevices().contains(d)) {
+				i++;
+			}
+		}
+
+		var += i + "/" + project.getDevices().size()
+				+ " devices match project type";
+		this.valSameDevices.setText(var);
+	}
+
 	public void update() {
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
+		calculateSameDevices();
+
+		this.valLocation.setText(project.getLocation().toString());
+		this.valProjectType.setText(project.getProjectTyp().getDescription());
 	}
 
 }
