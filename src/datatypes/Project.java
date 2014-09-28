@@ -10,6 +10,7 @@ import bigData.Clusterable;
 public class Project {
 	private Location location = null;
 	private List<Device> devices = new ArrayList<Device>();
+	private List<Service> services = new ArrayList<Service>();
 	private int id;
 	private Customer customer;
 	private ProjectTyp projectTyp;
@@ -116,4 +117,14 @@ public class Project {
 	public Date getEnd() {
 		return this.end;
 	}
+
+	public void linkService(Service service) {
+		if (this.services.contains(service)) {
+
+		} else {
+			this.services.add(service);
+			service.linkProject(this);
+		}
+	}
+
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import datatypes.Customer;
 import datatypes.Device;
 import datatypes.ProjectTyp;
+import datatypes.Service;
 import datatypes.Store;
 import UI.UIFrame;
 import UI.UILogin;
@@ -29,6 +30,7 @@ public class HILTITool {
 	public static List<Device> devices = new ArrayList<Device>();
 	public static List<Project> projects = new ArrayList<Project>();
 	public static List<Cluster> clusters = new ArrayList<Cluster>();
+	public static List<Service> services = new ArrayList<Service>();
 	public static List<Store> stores = new ArrayList<Store>();
 	public static List<ProjectTyp> projecttypes = new ArrayList<ProjectTyp>();
 	public static UIFrame uiframe = null;
@@ -136,6 +138,9 @@ public class HILTITool {
 
 			// Positionsdaten
 			loadLocations(con);
+
+			// Servicedaten
+			loadServices(con);
 
 			// MAp füllen
 			loadMap(con);
@@ -281,6 +286,40 @@ public class HILTITool {
 			Customer customer = new Customer(id, anzMitarbeiter, flottenmgmt,
 					new Location(latitude, longitude), name);
 			customers.add(customer);
+		}
+	}
+
+	private void loadServices(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT ID, KundeID, ProjektID, GeraetID, typ, Preis FROM Service";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			int id = rs.getInt("ID");
+			int kundeID = rs.getInt("KundeID");
+			int projectId = rs.getInt("ProjektID");
+			int deviceId = rs.getInt("GeraetID");
+			String typ = rs.getString("typ");
+			double price = rs.getDouble("Preis");
+
+			Service s = new Service(id, price, typ);
+
+			Customer c = findCustomer(kundeID);
+			if (c != null) {
+				c.linkService(s);
+			}
+
+			Project p = findProject(projectId);
+			if (p != null) {
+				p.linkService(s);
+			}
+
+			Device d = findDevice(deviceId);
+			if (d != null) {
+				d.linkService(s);
+			}
+
+			services.add(s);
 		}
 	}
 }

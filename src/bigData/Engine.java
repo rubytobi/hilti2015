@@ -401,7 +401,6 @@ public class Engine {
 				if (!sD.equals(d)) {
 					recs.add(new Recommendation(0.5, sD));
 				}
-
 			}
 		}
 

@@ -13,6 +13,7 @@ public class Customer {
 	private List<Store> stores = new ArrayList<Store>();
 	private List<Project> projects = new ArrayList<Project>();
 	private String name;
+	private List<Service> services;
 
 	public Customer(int id, int anzMitarbeiter, boolean flottenmgmt,
 			Location location, String name) {
@@ -90,6 +91,15 @@ public class Customer {
 
 	public List<Store> getStores() {
 		return this.stores;
+	}
+
+	public void linkService(Service service) {
+		if (this.services.contains(service)) {
+
+		} else {
+			this.services.add(service);
+			service.linkCustomer(this);
+		}
 	}
 
 }

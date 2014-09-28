@@ -6,6 +6,7 @@ import java.util.List;
 public class Device {
 	private int id;
 	private List<Location> locations = new ArrayList<Location>();
+	private List<Service> services = new ArrayList<Service>();
 	private boolean zubehoer;
 	private String description;
 	private String artNr;
@@ -139,6 +140,14 @@ public class Device {
 
 	public double getPriceFM() {
 		return this.priceFM;
+	}
+
+	public void linkService(Service service) {
+		if (this.services.contains(service)) {
+		} else {
+			this.services.add(service);
+			service.linkDevice(this);
+		}
 	}
 
 }

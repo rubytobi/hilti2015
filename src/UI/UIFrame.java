@@ -183,10 +183,8 @@ public class UIFrame extends JFrame implements ItemListener {
 		JPanel pnlProjects = new JPanel();
 		pnlProjects.setLayout(null);
 		pnlProjects.setBorder(new TitledBorder(UIManager
-
-		.getBorder("TitledBorder.border"), "Located projects",
-
-		TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				.getBorder("TitledBorder.border"), "Located projects",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlProjects.setBounds(614, 279, 262, 123);
 		pnlMain.add(pnlProjects);
 
