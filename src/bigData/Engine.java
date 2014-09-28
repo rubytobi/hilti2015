@@ -313,7 +313,7 @@ public class Engine {
 		ProjectTyp type = project.getProjectTyp();
 
 		for (Device d : type.getDevices()) {
-			if (project.getDevices().contains(d)) {
+			if (!project.getDevices().contains(d)) {
 				devices.add(d);
 			}
 		}
