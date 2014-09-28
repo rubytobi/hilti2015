@@ -10,6 +10,7 @@ public class Customer {
 	private boolean flottenmgmt;
 	private Location location;
 	private List<Device> devices = new ArrayList<Device>();
+	private List<Store> stores = new ArrayList<Store>();
 	private List<Project> projects = new ArrayList<Project>();
 	private String name;
 
@@ -20,6 +21,15 @@ public class Customer {
 		this.flottenmgmt = flottenmgmt;
 		this.location = location;
 		this.name = name;
+	}
+
+	public void linkStore(Store s) {
+		if (stores.contains(s)) {
+
+		} else {
+			stores.add(s);
+			s.linkCustomer(this);
+		}
 	}
 
 	@Override
@@ -76,6 +86,10 @@ public class Customer {
 
 	public List<Project> getProjects() {
 		return this.projects;
+	}
+
+	public List<Store> getStores() {
+		return this.stores;
 	}
 
 }

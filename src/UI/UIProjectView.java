@@ -294,6 +294,8 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 	private void putMissingDevices() {
 		List<Device> missing = Engine.detectMissingDevices(project);
+		missing = Engine.filterDevicesInStore(
+				project.getCustomer().getStores(), missing);
 
 		// TODO
 	}

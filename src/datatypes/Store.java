@@ -8,6 +8,7 @@ public class Store {
 	private int id;
 	public static ArrayList<Store> storeList = new ArrayList<Store>();
 	private List<Device> devices = new ArrayList<Device>();
+	private Customer customer;
 
 	public Store(int id) {
 		this.id = id;
@@ -44,5 +45,14 @@ public class Store {
 
 	public List<Device> getDevices() {
 		return devices;
+	}
+
+	public void linkCustomer(Customer customer) {
+		if (this.customer == null) {
+			this.customer = customer;
+			this.customer.linkStore(this);
+		}
+		// TODO Auto-generated method stub
+
 	}
 }
