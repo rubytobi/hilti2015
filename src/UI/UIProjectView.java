@@ -4,16 +4,25 @@ import hilti.HILTITool;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.GridLayout;
+
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.SwingConstants;
+
 import bigData.Cluster;
+
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
 import com.teamdev.jxbrowser.chromium.events.FailLoadingEvent;
@@ -23,21 +32,30 @@ import com.teamdev.jxbrowser.chromium.events.LoadEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadListener;
 import com.teamdev.jxbrowser.chromium.events.ProvisionalLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
+
 import datatypes.Customer;
 import datatypes.Device;
 import datatypes.Project;
+import datatypes.ProjectTyp;
+
 import java.awt.SystemColor;
+
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
+
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
+
 import javax.swing.JButton;
+
 import java.awt.FlowLayout;
+
 import javax.swing.JComboBox;
+
 import java.awt.Color;
 
 public class UIProjectView extends JFrame implements LoadListener {
@@ -225,8 +243,40 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 	}
 
+	private void calculateOldProjects() {
+		Customer c = project.getCustomer();
+		List<Project> projects = c.getProjects();
+		String var = "";
+		ProjectTyp ref = project.getProjectTyp();
+		int i = 0;
+
+		for (Project p : projects) {
+			if (ref.equals(p.getProjectTyp())) {
+				i++;
+			}
+		}
+
+		var += i + "/" + projects.size() + " projects of the same type";
+		this.valOldProjects.setText(var);
+	}
+
+	private void calculateSameDevices() {
+		String var = "";
+		int i = 0;
+		ProjectTyp typ = project.getProjectTyp();
+
+		for (Device d : project.getDevices()) {
+			if (typ.getDevices().contains(d)) {
+				i++;
+			}
+		}
+
+		var += i + "/" + project.getDevices().size()
+				+ " devices match project type";
+		this.valSameDevices.setText(var);
+	}
+
 	public void update() {
-<<<<<<< HEAD
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
 		calculateSameDevices();
@@ -240,17 +290,11 @@ public class UIProjectView extends JFrame implements LoadListener {
 		List<Device> missing = Engine.detectMissingDevices(project);
 		missing = Engine.filterDevicesInStore(
 				project.getCustomer().getStores(), missing);
-=======
-		List<Device> allDevices = project.getProjectTyp().getDevices();
-		allDevices.removeAll(project.getDevices());
 		
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
 		for(Device d: allDevices){
 			dtm.addRow(rowData)
 		}
 		
->>>>>>> origin/master
-
 	}
-
 }
