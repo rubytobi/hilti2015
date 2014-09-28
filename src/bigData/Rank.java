@@ -11,8 +11,12 @@ public class Rank implements Comparable<Rank> {
 		this.pt = pt;
 	}
 
+	private double round(double d, int i) {
+		return Math.round(Math.pow(10, i) * d) / Math.pow(10, i);
+	}
+
 	public String toString() {
-		return rank + " - " + pt.toString();
+		return round(rank * 100, 2) + "% - " + pt.toString();
 	}
 
 	@Override
@@ -33,5 +37,4 @@ public class Rank implements Comparable<Rank> {
 	public ProjectTyp getProjectTyp() {
 		return this.pt;
 	}
-
 }

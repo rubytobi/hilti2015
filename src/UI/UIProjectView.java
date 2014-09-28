@@ -4,17 +4,27 @@ import hilti.HILTITool;
 
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.GridLayout;
+
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
+
 import java.awt.Font;
+
 import javax.swing.SwingConstants;
+
 import bigData.Cluster;
 import bigData.Engine;
+import bigData.Rank;
+import bigData.Recommendation;
 
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
@@ -25,14 +35,18 @@ import com.teamdev.jxbrowser.chromium.events.LoadEvent;
 import com.teamdev.jxbrowser.chromium.events.LoadListener;
 import com.teamdev.jxbrowser.chromium.events.ProvisionalLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
+
 import datatypes.Customer;
 import datatypes.Device;
 import datatypes.Project;
+
 import java.awt.SystemColor;
+
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
+
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -40,8 +54,11 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
+
 import java.awt.FlowLayout;
+
 import javax.swing.JComboBox;
+
 import java.awt.Color;
 
 public class UIProjectView extends JFrame implements LoadListener {
@@ -137,9 +154,10 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion" }));
-		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
-		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
+				new String[] { "%", "ArtNo", "Descritpion" }));
+		tableRec.getColumnModel().getColumn(0).setPreferredWidth(40);
+		tableRec.getColumnModel().getColumn(1).setPreferredWidth(60);
+		tableRec.getColumnModel().getColumn(2).setPreferredWidth(120);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
 		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
@@ -177,7 +195,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
 		update();
-		
+
 		setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
@@ -239,39 +257,44 @@ public class UIProjectView extends JFrame implements LoadListener {
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
 		calculateSameDevices();
-		putMissingDevices();
 
-		this.valLocation.setText(project.getLocation().toString());
-		this.valProjectType.setText(project.getProjectTyp().getDescription());
+		putRecommendations();
+
+		valLocation.setText(project.getLocation().toString());
+		valProjectType.setText(project.getProjectTyp().getDescription());
+	}
+
+	private void putRecommendations() {
+		List<Recommendation> recs = Engine.generateRec(project);
+
+		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
+
+		for (Recommendation r : recs) {
+			dtm.addRow(new Object[] { r.getRank(), r.getDevice().getArtNr(),
+					r.getDevice().getBezeichnung() });
+		}
 	}
 
 	private void calculateSameDevices() {
 		List<Device> pDevices = project.getDevices();
 		List<Device> ptDevices = project.getProjectTyp().getDevices();
-		
+
 		int score = 0;
-		
-		for(Device d:pDevices){
-			if(ptDevices.contains(d)) score++;
+
+		for (Device d : pDevices) {
+			if (ptDevices.contains(d))
+				score++;
 		}
-		
-		valSameDevices.setText(score + "/"+pDevices.size()+" match project type");
-		
+
+		valSameDevices.setText(score + "/" + pDevices.size()
+				+ " match project type");
+
 	}
 
 	private void calculateOldProjects() {
-		valOldProjects.setText(Engine.getNumberOfProjectsInSameCat(project)+ "/" +project.getCustomer().getProjects().size()+" projects of the same type");
-		
-	}
-
-	private void putMissingDevices() {
-		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
-		List<Device> missing = Engine.detectMissingDevices(project);
-		
-		for(Device d: missing){
-			dtm.addRow(new Object[]{d.getArtNr(),d.getBezeichnung()});
-		}
+		valOldProjects.setText(Engine.getNumberOfProjectsInSameCat(project)
+				+ "/" + project.getCustomer().getProjects().size()
+				+ " projects of the same type");
 
 	}
-
 }

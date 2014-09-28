@@ -19,7 +19,6 @@ public class Project {
 
 	public Project() {
 	}
-	
 
 	public Project(int id, String scope, int countEmployees, Date end) {
 		this.id = id;
@@ -112,5 +111,9 @@ public class Project {
 
 	public Customer getCustomer() {
 		return this.customer;
+	}
+
+	public Date getEnd() {
+		return this.end;
 	}
 }

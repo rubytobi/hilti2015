@@ -4,6 +4,7 @@ import hilti.HILTITool;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -252,7 +253,7 @@ public class Engine {
 			Rank history = findRank(typ.getId(), rankingHistory);
 
 			double rankValue = 0;
-			rankValue = type.getRank() + history.getRank();
+			rankValue = type.getRank() / 2 + history.getRank() / 2;
 			ranking.add(new Rank(rankValue, typ));
 		}
 
@@ -263,22 +264,34 @@ public class Engine {
 			List<ProjectTyp> typs) {
 		List<Rank> ranking = new ArrayList<Rank>();
 		double points = 0;
+		double maxPoints = 0;
+		Date oneYear = new Date();
+		oneYear.setTime((long) (oneYear.getTime() - (3.1556926 * Math.pow(10,
+				10))));
 
 		for (ProjectTyp typ : typs) {
 			points = 0;
+			maxPoints = 0;
 
 			System.out.println(typ);
 			for (Project p : history) {
+				maxPoints += 1;
+
 				if (typ.equals(p.getProjectTyp())) {
-					System.out.println("[H=1] " + p);
-					points += 1;
+					if (p.getEnd().before(oneYear)) {
+						System.out.println("[H=1] " + p);
+						points += 1;
+					} else {
+						System.out.println("[H=0.5] " + p);
+						points += 0.5;
+					}
 				} else {
 					System.out.println("[H=0] " + p);
 					points += 0;
 				}
 			}
 
-			ranking.add(new Rank(points, typ));
+			ranking.add(new Rank(points / maxPoints, typ));
 		}
 
 		return ranking;
@@ -287,12 +300,16 @@ public class Engine {
 	private static List<Rank> projectType(Cluster cluster, List<ProjectTyp> typs) {
 		List<Rank> ranking = new ArrayList<Rank>();
 		double points = 0;
+		double maxPoints = 0;
 
 		for (ProjectTyp typ : typs) {
 			points = 0;
+			maxPoints = 0;
 
 			System.out.println(typ);
 			for (Device d : cluster.getDevices()) {
+				maxPoints += 1.5;
+
 				if (typ.getDevices().contains(d)) {
 					System.out.println("[T=1.5] " + d);
 					points += 1.5;
@@ -302,7 +319,7 @@ public class Engine {
 				}
 			}
 
-			ranking.add(new Rank(points, typ));
+			ranking.add(new Rank(points / maxPoints, typ));
 		}
 
 		return ranking;
@@ -320,12 +337,12 @@ public class Engine {
 
 		return devices;
 	}
-	
-	public static int getNumberOfProjectsInSameCat(Project p){
-		List <Project> pList = p.getCustomer().getProjects();
+
+	public static int getNumberOfProjectsInSameCat(Project p) {
+		List<Project> pList = p.getCustomer().getProjects();
 		int count = 0;
-		for(Project pOld : pList){
-			if(pOld.getProjectTyp().equals(p.getProjectTyp())){
+		for (Project pOld : pList) {
+			if (pOld.getProjectTyp().equals(p.getProjectTyp())) {
 				count++;
 			}
 		}
@@ -344,19 +361,37 @@ public class Engine {
 		return missing;
 	}
 
-	public static List<Device> filterDevicesInStore(List<Store> stores,
-			List<Device> missing) {
-		List<Device> filtered = new ArrayList<Device>();
-		filtered.addAll(missing);
+	public static List<Recommendation> generateRec(Project project) {
+		List<Recommendation> recs = new ArrayList<Recommendation>();
+
+		// fehlende geräte anhand des projektes sammeln
+		List<Device> missing = detectMissingDevices(project);
 
 		for (Device d : missing) {
-			for (Store s : stores) {
-				if (s.getDevices().contains(d)) {
-					filtered.remove(d);
-				}
+			recs.add(new Recommendation(1, d));
+
+			// geä
+			List<Device> similar = devicesFromProductLine(d.getBezeichnung());
+
+			for (Device sD : similar) {
+				// recs.add(new Recommendation(0.5, sD));
 			}
 		}
 
-		return filtered;
+		// geräte filtern die unbenutzt in stores lagern
+
+		return recs;
+	}
+
+	private static List<Device> devicesFromProductLine(String bezeichnung) {
+		List<Device> similar = new ArrayList<Device>();
+
+		for (Device d : HILTITool.devices) {
+			if (d.getBezeichnung().equals(bezeichnung)) {
+				similar.add(d);
+			}
+		}
+
+		return similar;
 	}
 }
