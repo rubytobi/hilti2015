@@ -15,8 +15,12 @@ public class Rank implements Comparable<Rank> {
 		return Math.round(Math.pow(10, i) * d) / Math.pow(10, i);
 	}
 
+	public double getFixedRank() {
+		return round(rank * 100, 2);
+	}
+
 	public String toString() {
-		return round(rank * 100, 2) + "% - " + pt.toString();
+		return getFixedRank() + "% - " + pt.toString();
 	}
 
 	@Override

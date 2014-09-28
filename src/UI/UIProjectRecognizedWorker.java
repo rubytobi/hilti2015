@@ -55,7 +55,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-public class UIProjectRecognized extends JFrame implements LoadListener {
+public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 	/**
 	 * 
@@ -68,7 +68,7 @@ public class UIProjectRecognized extends JFrame implements LoadListener {
 	private JTable tableTools;
 	private JComboBox comboBoxProjectType;
 
-	public UIProjectRecognized(final Cluster cluster, final Customer customer)
+	public UIProjectRecognizedWorker(final Cluster cluster, final Customer customer)
 			throws HeadlessException {
 		super("Project recognized!");
 		this.cluster = cluster;
@@ -206,14 +206,15 @@ public class UIProjectRecognized extends JFrame implements LoadListener {
 					p.linkDevice(d);
 				}
 
-				ProjectTyp pt = match.get(
-						comboBoxProjectType.getSelectedIndex()).getProjectTyp();
+				int i = comboBoxProjectType.getSelectedIndex();
+				Rank rank = match.get(i);
+				ProjectTyp pt = rank.getProjectTyp();
 
 				p.linkProjectTyp(pt);
 
 				HILTITool.projects.add(p);
 				System.out.println("Project added");
-				new UIProjectView(p);
+				new UIProjectViewWorker(p, rank);
 				dispose();
 			}
 		});
@@ -307,7 +308,7 @@ public class UIProjectRecognized extends JFrame implements LoadListener {
 
 	public void update() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

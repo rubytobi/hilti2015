@@ -1,15 +1,11 @@
 package UI;
 
-import hilti.HILTITool;
-
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
-import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
@@ -19,9 +15,6 @@ import javax.swing.JLabel;
 
 import java.awt.Font;
 
-import javax.swing.SwingConstants;
-
-import bigData.Cluster;
 import bigData.Engine;
 import bigData.Rank;
 import bigData.Recommendation;
@@ -36,11 +29,8 @@ import com.teamdev.jxbrowser.chromium.events.LoadListener;
 import com.teamdev.jxbrowser.chromium.events.ProvisionalLoadingEvent;
 import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
 
-import datatypes.Customer;
 import datatypes.Device;
 import datatypes.Project;
-
-import java.awt.SystemColor;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
@@ -48,20 +38,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
 import java.awt.Component;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
-import java.util.Vector;
-
-import javax.swing.JButton;
-
-import java.awt.FlowLayout;
-
-import javax.swing.JComboBox;
-
 import java.awt.Color;
 
-public class UIProjectView extends JFrame implements LoadListener {
+public class UIProjectViewWorker extends JFrame implements LoadListener {
 
 	/**
 	 * 
@@ -76,12 +56,15 @@ public class UIProjectView extends JFrame implements LoadListener {
 	private JLabel valLocation;
 	private JLabel valProjectType;
 	private JLabel valSameDevices;
+	private Rank rank;
+	private JLabel label;
 
-	public UIProjectView(Project p) throws HeadlessException {
+	public UIProjectViewWorker(Project p, Rank r) throws HeadlessException {
 		super("Project recognized!");
 		setTitle("Project Based RecEngine");
 
 		this.project = p;
+		this.rank = r;
 
 		// SET SYSTEM LOOK AND FEEL
 		try {
@@ -154,10 +137,9 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "%", "ArtNo", "Descritpion" }));
-		tableRec.getColumnModel().getColumn(0).setPreferredWidth(40);
-		tableRec.getColumnModel().getColumn(1).setPreferredWidth(60);
-		tableRec.getColumnModel().getColumn(2).setPreferredWidth(120);
+				new String[] { "ArtNo", "Descritpion" }));
+		tableRec.getColumnModel().getColumn(1).setPreferredWidth(80);
+		tableRec.getColumnModel().getColumn(2).setPreferredWidth(140);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
 		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
@@ -171,7 +153,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
 
-		valOldProjects = new JLabel("5/6 projects of the same type");
+		valOldProjects = new JLabel();
 		pnlOldProjects.add(valOldProjects);
 
 		JPanel pnlSameDevices = new JPanel();
@@ -182,11 +164,10 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblSameDevices.setForeground(new Color(100, 149, 237));
 		pnlSameDevices.add(lblSameDevices);
 
-		valSameDevices = new JLabel("4/7 devices match project type");
+		valSameDevices = new JLabel();
 		pnlSameDevices.add(valSameDevices);
 
-		JLabel label = new JLabel("87%");
-		label.setForeground(new Color(60, 179, 113));
+		label = new JLabel();
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		label.setFont(new Font("Lucida Grande", Font.BOLD, 26));
 		pnlInfo.add(label);
@@ -260,8 +241,23 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		putRecommendations();
 
+		setPercentage(rank.getFixedRank());
 		valLocation.setText(project.getLocation().toString());
 		valProjectType.setText(project.getProjectTyp().getDescription());
+	}
+
+	public void setPercentage(double d) {
+		label.setText(d + "%");
+
+		if (d > 75) {
+			label.setForeground(new Color(60, 179, 113));
+		} else if (d < 75 && d > 25) {
+			// TODO
+			label.setForeground(new Color(60, 179, 113));
+		} else {
+			// TODO
+			label.setForeground(new Color(60, 179, 113));
+		}
 	}
 
 	private void putRecommendations() {
@@ -270,7 +266,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
 
 		for (Recommendation r : recs) {
-			dtm.addRow(new Object[] { r.getRank(), r.getDevice().getArtNr(),
+			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
 					r.getDevice().getBezeichnung() });
 		}
 	}

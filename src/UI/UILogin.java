@@ -174,12 +174,22 @@ public class UILogin extends JFrame {
 				Cluster cluster = Engine.userAtCluster(customer,
 						HILTITool.clusters);
 
-				if (p != null) {
-					new UIProjectView(p);
-					dispose();
-				} else if (cluster != null) {
-					new UIProjectRecognized(cluster, customer);
-					dispose();
+				if (selectedRole == ROLE_WORKER) {
+					if (p != null) {
+						new UIProjectViewWorker(p, null);
+						dispose();
+					} else if (cluster != null) {
+						new UIProjectRecognizedWorker(cluster, customer);
+						dispose();
+					}
+				} else if (selectedRole == ROLE_MANAGER) {
+					if (p != null) {
+						new UIProjectViewWorker(p, null);
+						dispose();
+					} else if (cluster != null) {
+						new UIProjectRecognizedWorker(cluster, customer);
+						dispose();
+					}
 				}
 			}
 		});

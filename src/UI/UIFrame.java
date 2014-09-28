@@ -247,7 +247,6 @@ public class UIFrame extends JFrame implements ItemListener {
 	}
 
 	public void addToolsToTable(List<Device> devices) {
-
 		System.out.println("LIST SIZE: " + devices.size());
 
 		DefaultTableModel model = (DefaultTableModel) tableTools.getModel();
