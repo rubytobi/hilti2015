@@ -253,7 +253,7 @@ public class Engine {
 			Rank history = findRank(typ.getId(), rankingHistory);
 
 			double rankValue = 0;
-			rankValue = type.getRank() / 2 + history.getRank() / 2;
+			rankValue = type.getRank() / 3 * 2 + history.getRank() / 3;
 			ranking.add(new Rank(rankValue, typ));
 		}
 
@@ -278,7 +278,7 @@ public class Engine {
 				maxPoints += 1;
 
 				if (typ.equals(p.getProjectTyp())) {
-					if (p.getEnd().before(oneYear)) {
+					if (p.getEnd().after(oneYear)) {
 						System.out.println("[H=1] " + p);
 						points += 1;
 					} else {
