@@ -320,4 +320,16 @@ public class Engine {
 
 		return devices;
 	}
+
+	public List<Device> missingDevices(Project p, ProjectTyp typ) {
+		List<Device> missing = new ArrayList<Device>();
+
+		for (Device d : typ.getDevices()) {
+			if (!p.getDevices().contains(d)) {
+				missing.add(d);
+			}
+		}
+
+		return missing;
+	}
 }

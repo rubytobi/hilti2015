@@ -22,6 +22,7 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 
 import bigData.Cluster;
+import bigData.Engine;
 
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
@@ -285,9 +286,16 @@ public class UIProjectView extends JFrame implements LoadListener {
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
 		calculateSameDevices();
+		putMissingDevices();
 
 		this.valLocation.setText(project.getLocation().toString());
 		this.valProjectType.setText(project.getProjectTyp().getDescription());
+	}
+
+	private void putMissingDevices() {
+		List<Device> missing = Engine.detectMissingDevices(project);
+
+		// TODO
 	}
 
 }
