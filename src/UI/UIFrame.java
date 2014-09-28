@@ -237,7 +237,7 @@ public class UIFrame extends JFrame implements ItemListener {
 	public void itemStateChanged(ItemEvent ie) {
 		toggleMarkers();
 	}
-
+	
 	private void toggleMarkers() {
 		if (chckbxShowProjects.isSelected()) {
 			browser.executeJavaScript("markersOn(" + ")");

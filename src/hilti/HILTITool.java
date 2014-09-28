@@ -50,7 +50,7 @@ public class HILTITool {
 		Engine.recogniseLocations(clusters, projects);
 	}
 
-	public Customer findCustomer(int id) {
+	public static Customer findCustomer(int id) {
 		for (Customer c : customers) {
 			if (c.getId() == id) {
 				return c;
@@ -60,7 +60,11 @@ public class HILTITool {
 		return null;
 	}
 
-	public Device findDevice(int id) {
+	public static Device findDevice(int id) {
+		return findDevice(id, devices);
+	}
+
+	public static Device findDevice(int id, List<Device> devices) {
 		for (Device d : devices) {
 			if (d.getId() == id) {
 				return d;
@@ -70,7 +74,11 @@ public class HILTITool {
 		return null;
 	}
 
-	public Project findProject(int id) {
+	public static Project findProject(int id) {
+		return findProject(id, projects);
+	}
+
+	public static Project findProject(int id, List<Project> projects) {
 		for (Project p : projects) {
 			if (p.getId() == id) {
 				return p;
@@ -80,7 +88,12 @@ public class HILTITool {
 		return null;
 	}
 
-	public ProjectTyp findProjectTyp(int id) {
+	public static ProjectTyp findProjectTyp(int id) {
+		return findProjectTyp(id, projecttypes);
+	}
+
+	public static ProjectTyp findProjectTyp(int id,
+			List<ProjectTyp> projecttypes) {
 		for (ProjectTyp pt : projecttypes) {
 			if (pt.getId() == id) {
 				return pt;

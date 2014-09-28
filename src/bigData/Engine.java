@@ -187,12 +187,19 @@ public class Engine {
 		Map<Double, Project> matrix = new TreeMap<Double, Project>();
 
 		for (Project p : projects) {
-			matrix.put(cObject.distance(p.toCluster()), p);
+			if (!p.isOver()) {
+				matrix.put(cObject.distance(p.toCluster()), p);
+			}
 		}
 
 		List<Double> keys = new ArrayList<Double>(matrix.keySet());
 		Collections.sort(keys);
-		return matrix.get(keys.get(0));
+
+		if (matrix.keySet().size() > 0) {
+			return matrix.get(keys.get(0));
+		} else {
+			return null;
+		}
 	}
 
 	public static Cluster userAtCluster(Customer customer,
@@ -219,7 +226,61 @@ public class Engine {
 
 	public static List<Rank> matchProjectType(Cluster cluster,
 			List<ProjectTyp> typs, Customer customer) {
-		List<Rank> ranking = projectType(cluster, typs);
+		List<Rank> rankingType = projectType(cluster, typs);
+		List<Rank> rankingHistory = projectHistory(customer.getProjects(), typs);
+
+		List<Rank> ranking = mergeRanking(rankingType, rankingHistory);
+		return ranking;
+	}
+
+	public static Rank findRank(int id, List<Rank> ranks) {
+		for (Rank r : ranks) {
+			if (r.getProjectTyp().getId() == id) {
+				return r;
+			}
+		}
+
+		return null;
+	}
+
+	private static List<Rank> mergeRanking(List<Rank> rankingType,
+			List<Rank> rankingHistory) {
+		List<Rank> ranking = new ArrayList<Rank>();
+
+		for (ProjectTyp typ : HILTITool.projecttypes) {
+			Rank type = findRank(typ.getId(), rankingType);
+			Rank history = findRank(typ.getId(), rankingHistory);
+
+			double rankValue = 0;
+			rankValue = type.getRank() + history.getRank();
+			ranking.add(new Rank(rankValue, typ));
+		}
+
+		return ranking;
+	}
+
+	private static List<Rank> projectHistory(List<Project> history,
+			List<ProjectTyp> typs) {
+		List<Rank> ranking = new ArrayList<Rank>();
+		double points = 0;
+
+		for (ProjectTyp typ : typs) {
+			points = 0;
+
+			System.out.println(typ);
+			for (Project p : history) {
+				if (typ.equals(p)) {
+					System.out.println("[H=1] " + p);
+					points += 1;
+				} else {
+					System.out.println("[H=0] " + p);
+					points += 0;
+				}
+			}
+
+			ranking.add(new Rank(points, typ));
+		}
+
 		return ranking;
 	}
 
@@ -233,11 +294,11 @@ public class Engine {
 			System.out.println(typ);
 			for (Device d : cluster.getDevices()) {
 				if (typ.getDevices().contains(d)) {
-					System.out.println("++" + d);
-					points++;
+					System.out.println("[T=1.5] " + d);
+					points += 1.5;
 				} else {
-					System.out.println("--" + d);
-					points -= 0.5;
+					System.out.println("[T=0] " + d);
+					points += 0;
 				}
 			}
 

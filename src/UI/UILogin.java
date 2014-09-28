@@ -12,6 +12,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -43,7 +45,7 @@ public class UILogin extends JFrame {
 	private ImageIcon iconWorker;
 	private JLabel lblRole;
 	public static int selectedRole = 1;
-
+	private final JComboBox<String> comboBox;
 	public static final int ROLE_WORKER = 1;
 	public static final int ROLE_MANAGER = 2;
 
@@ -92,10 +94,8 @@ public class UILogin extends JFrame {
 		JLabel lblNewLabel = new JLabel("Select Customer:");
 		panel.add(lblNewLabel);
 
-		final JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox<String>();
 		panel.add(comboBox);
-		comboBox.setModel(new DefaultComboBoxModel(HILTITool.customers
-				.toArray()));
 
 		JPanel panel_1 = new JPanel();
 		pnlSetup.add(panel_1);
@@ -176,13 +176,27 @@ public class UILogin extends JFrame {
 
 				if (p != null) {
 					new UIProjectView(p);
+					dispose();
 				} else if (cluster != null) {
 					new UIProjectRecognized(cluster, customer);
+					dispose();
 				}
 			}
 		});
 		pnlSetup.add(btnLogin, BorderLayout.SOUTH);
 
+		update();
 		this.setVisible(true);
+	}
+
+	public void update() {
+		List<String> customers = new ArrayList<String>();
+
+		for (Customer c : HILTITool.customers) {
+			customers.add(c.toString());
+		}
+
+		comboBox.setModel(new DefaultComboBoxModel<String>(customers
+				.toArray(new String[customers.size()])));
 	}
 }

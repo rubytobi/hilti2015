@@ -249,6 +249,7 @@ public class UIProjectRecognized extends JFrame implements LoadListener {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				new UILogin();
 				dispose();
 			}
 		});

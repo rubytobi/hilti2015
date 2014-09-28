@@ -74,4 +74,8 @@ public class Customer {
 		return this.anzMitarbeiter;
 	}
 
+	public List<Project> getProjects() {
+		return this.projects;
+	}
+
 }
