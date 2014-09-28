@@ -19,6 +19,7 @@ public class Project {
 
 	public Project() {
 	}
+	
 
 	public Project(int id, String scope, int countEmployees, Date end) {
 		this.id = id;

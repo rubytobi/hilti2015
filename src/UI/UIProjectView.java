@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import bigData.Cluster;
+import bigData.Engine;
+
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
 import com.teamdev.jxbrowser.chromium.events.FailLoadingEvent;
@@ -35,6 +37,8 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
+import java.util.Vector;
+
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import javax.swing.JComboBox;
@@ -145,7 +149,7 @@ public class UIProjectView extends JFrame implements LoadListener {
 		lblOldProjects.setForeground(new Color(100, 149, 237));
 		pnlOldProjects.add(lblOldProjects);
 
-		JLabel valOldProjects = new JLabel("5/6 projects of the same type");
+		JLabel valOldProjects = new JLabel(Engine.getNumberOfProjectsInSameCat(project)+ "/" +project.getCustomer().getProjects().size()+" projects of the same type");
 		pnlOldProjects.add(valOldProjects);
 
 		JPanel pnlSameDevices = new JPanel();
@@ -168,6 +172,8 @@ public class UIProjectView extends JFrame implements LoadListener {
 		JPanel pnlSouth = new JPanel();
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
+		update();
+		
 		setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
@@ -226,12 +232,12 @@ public class UIProjectView extends JFrame implements LoadListener {
 	}
 
 	public void update() {
-		List<Device> allDevices = project.getProjectTyp().getDevices();
-		allDevices.removeAll(project.getDevices());
 		
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
-		for(Device d: allDevices){
-			dtm.addRow(rowData)
+		List<Device> missing = Engine.detectMissingDevices(project);
+		
+		for(Device d: missing){
+			dtm.addRow(new Object[]{d.getArtNr(),d.getBezeichnung()});
 		}
 		
 
