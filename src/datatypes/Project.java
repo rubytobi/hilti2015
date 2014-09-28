@@ -57,8 +57,7 @@ public class Project {
 	}
 
 	public String toString() {
-		return "[" + id + "] " + scope + " #" + countEmployees + " "
-				+ end.toString();
+		return "[" + id + "] " + scope + " #" + countEmployees;
 	}
 
 	public boolean isLocated() {

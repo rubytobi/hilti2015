@@ -189,7 +189,7 @@ public class UILogin extends JFrame {
 						dispose();
 					} else if (cluster != null) {
 						// TODO
-						// new UIProjectRecognizedManager(cluster, customer);
+						//new UIProjectRecognizedManager(cluster, customer);
 						dispose();
 					}
 				}

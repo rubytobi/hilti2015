@@ -11,12 +11,8 @@ public class Rank implements Comparable<Rank> {
 		this.pt = pt;
 	}
 
-	private double round(double d, int i) {
-		return Math.round(Math.pow(10, i) * d) / Math.pow(10, i);
-	}
-
 	public double getFixedRank() {
-		return round(rank * 100, 2);
+		return Engine.round(rank * 100, 2);
 	}
 
 	public String toString() {

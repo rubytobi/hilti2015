@@ -1,12 +1,13 @@
 package UI;
 
+import hilti.HILTITool;
+
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
@@ -19,6 +20,7 @@ import bigData.Engine;
 import bigData.Rank;
 import bigData.Recommendation;
 
+import com.sun.javafx.scene.text.HitInfo;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
 import com.teamdev.jxbrowser.chromium.events.FailLoadingEvent;
@@ -31,6 +33,7 @@ import com.teamdev.jxbrowser.chromium.events.StartLoadingEvent;
 
 import datatypes.Device;
 import datatypes.Project;
+import datatypes.Service;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
@@ -57,6 +60,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 	private JLabel valProjectType;
 	private Rank rank;
 	private JLabel valSavings;
+	private JLabel valDuration;
 
 	public UIProjectViewManager(Project p, Rank r) throws HeadlessException {
 		super("Project recognized!");
@@ -117,21 +121,21 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		valLocation = new JLabel(project.getLocation().toString());
 		pnlLocation.add(valLocation);
-		
+
 		JPanel pnlFleet = new JPanel();
 		pnlFleet.setBackground(UIManager.getColor("CheckBox.select"));
 		pnlDetail.add(pnlFleet);
-		
+
 		JLabel valFleet = new JLabel("no fleet user");
 		valFleet.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlFleet.add(valFleet);
 
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Description","PriceRetail","PriceFleet" }));
+				new String[] { "ArtNo", "Description", "PriceRetail",
+						"PriceFleet" }));
 		tableDevices.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableDevices.getColumnModel().getColumn(1).setPreferredWidth(150);
-		addToolsToTable(project.getDevices());
 
 		JScrollPane scrollPaneDevices = new JScrollPane(tableDevices);
 		scrollPaneDevices.setPreferredSize(new Dimension(400, 100));
@@ -145,7 +149,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		tableService = new JTable();
 		tableService.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion","Type","Price" }));
+				new String[] { "ArtNo", "Descritpion", "Type", "Price" }));
 		tableService.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableService.getColumnModel().getColumn(1).setPreferredWidth(140);
 
@@ -160,8 +164,8 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		lblDuration.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 		lblDuration.setForeground(Color.BLACK);
 		pnlOldProjects.add(lblDuration);
-		
-		JLabel valDuration = new JLabel("less than 14 days");
+
+		valDuration = new JLabel("less than 14 days");
 		valDuration.setForeground(new Color(60, 179, 113));
 		valDuration.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		pnlOldProjects.add(valDuration);
@@ -169,7 +173,8 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		JPanel pnlSameDevices = new JPanel();
 		pnlInfo.add(pnlSameDevices);
 
-		JLabel lblSameDevices = new JLabel("you should switch to our Fleetservice");
+		JLabel lblSameDevices = new JLabel(
+				"you should switch to our Fleetservice");
 		lblSameDevices.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 		lblSameDevices.setForeground(new Color(0, 0, 0));
 		pnlSameDevices.add(lblSameDevices);
@@ -179,8 +184,9 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		valSavings.setAlignmentX(Component.CENTER_ALIGNMENT);
 		valSavings.setFont(new Font("Lucida Grande", Font.BOLD, 26));
 		pnlInfo.add(valSavings);
-		
-		JLabel lblSavingsForAn = new JLabel("saved for an average project length of 12 days");
+
+		JLabel lblSavingsForAn = new JLabel(
+				"saved for an average project length of 12 days");
 		lblSavingsForAn.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblSavingsForAn.setForeground(Color.BLACK);
 		lblSavingsForAn.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
@@ -243,62 +249,77 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		}
 
 		for (Device d : devices) {
-			model.addRow(new String[] { d.getArtNr(), d.getScope() });
+			model.addRow(new String[] { d.getArtNr(), d.getScope(),
+					d.getPrice() + "€", d.getPriceFM() + "€" });
+		}
+
+	}
+
+	public void addServicesToTable(List<Service> services) {
+
+		System.out.println("LIST SIZE: " + services.size());
+
+		DefaultTableModel model = (DefaultTableModel) tableService.getModel();
+		while (model.getRowCount() > 0) {
+			model.removeRow(0);
+		}
+
+		for (Service s : services) {
+			model.addRow(new String[] { s.getDevice().getArtNr() + "",
+					s.getDevice().getScope(), s.getTyp(), s.getPrice() + "€" });
 		}
 
 	}
 
 	public void update() {
-		addToolsToTable(project.getDevices());
-		calculateOldProjects();
-		calculateSameDevices();
-
-		putRecommendations();
-
-		setPercentage(rank.getFixedRank());
-		valLocation.setText(project.getLocation().toString());
 		valProjectType.setText(project.getProjectTyp().getDescription());
+		valLocation.setText(project.getLocation().toString());
+		addToolsToTable(project.getDevices());
+
+		// TODO
+		addServicesToTable(HILTITool.services);
+		double days = calculateBreakEvenPoint();
+		double amount = calculateFMPrice();
+		setCountDays(days, amount);
+
 	}
 
-	public void setPercentage(double d) {
-		valSavings.setText("2314.20\u20AC");
+	private double calculateFMPrice() {
+		double cost = 0;
 
-		if (d > 75) {
-			valSavings.setForeground(new Color(60, 179, 113));
-		} else if (d < 75 && d > 25) {
-			// TODO
-			valSavings.setForeground(new Color(60, 179, 113));
-		} else {
-			// TODO
-			valSavings.setForeground(new Color(60, 179, 113));
-		}
-	}
-
-	private void putRecommendations() {
-		List<Recommendation> recs = Engine.generateRec(project);
-
-		DefaultTableModel dtm = (DefaultTableModel) tableService.getModel();
-
-		for (Recommendation r : recs) {
-			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
-					r.getDevice().getBezeichnung() });
-		}
-	}
-
-	private void calculateSameDevices() {
-		List<Device> pDevices = project.getDevices();
-		List<Device> ptDevices = project.getProjectTyp().getDevices();
-
-		int score = 0;
-
-		for (Device d : pDevices) {
-			if (ptDevices.contains(d))
-				score++;
+		for (Service s : HILTITool.services) {
+			cost += s.getPrice();
 		}
 
+		cost = cost / 2 * 10;
+		return cost;
 	}
 
-	private void calculateOldProjects() {
+	private double calculateBreakEvenPoint() {
+		double summe = 0;
+		double summeFM = 0;
+		double service = 0;
 
+		for (Service s : HILTITool.services) {
+			service += s.getPrice();
+		}
+
+		service /= HILTITool.services.size();
+		service *= 3;
+
+		for (Device d : project.getDevices()) {
+			summe += d.getPrice();
+			summeFM += d.getPriceFM() / 30;
+		}
+
+		return (summe + service * project.getDevices().size())
+				/ (summeFM / 2 * 10);
+	}
+
+	public void setCountDays(double days, double amount) {
+		days = Engine.round(days, 0);
+		amount = Engine.round(amount, 2);
+		valDuration.setText("less than " + days + " days");
+		valSavings.setText(amount + "€");
 	}
 }

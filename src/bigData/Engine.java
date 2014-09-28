@@ -203,6 +203,10 @@ public class Engine {
 		}
 	}
 
+	public static double round(double d, int i) {
+		return Math.round(Math.pow(10, i) * d) / Math.pow(10, i);
+	}
+
 	public static Cluster userAtCluster(Customer customer,
 			List<Cluster> clusters) {
 		if (clusters == null || clusters.size() == 0 || customer == null) {

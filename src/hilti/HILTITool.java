@@ -207,8 +207,7 @@ public class HILTITool {
 			try {
 				end = sdf.parse(endString);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				end = null;
 			}
 			Project p = new Project(ID, scope, anzPersonen, end);
 
@@ -250,7 +249,7 @@ public class HILTITool {
 
 	private void loadDevices(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
-		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID, PreisEinzel, PreisFlotte FROM Geraet";
+		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID, ProjektID, PreisEinzel, PreisFlotte FROM Geraet";
 		ResultSet rs = stmt.executeQuery(sql);
 
 		while (rs.next()) {
@@ -260,6 +259,7 @@ public class HILTITool {
 			boolean zubehoer = rs.getBoolean("Zubehoer");
 			int kundeID = rs.getInt("KundeID");
 			int projectTypId = rs.getInt("ProjektTypID");
+			int projectId = rs.getInt("ProjektID");
 			int price = rs.getInt("PreisEinzel");
 			int priceFM = rs.getInt("PreisFlotte");
 
@@ -274,6 +274,11 @@ public class HILTITool {
 			ProjectTyp pt = findProjectTyp(projectTypId);
 			if (pt != null) {
 				pt.linkDevice(d);
+			}
+
+			Project p = findProject(projectId);
+			if (p != null) {
+				p.linkDevice(d);
 			}
 
 			devices.add(d);

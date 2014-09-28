@@ -69,4 +69,8 @@ public class Service {
 	public String getTyp() {
 		return this.typ;
 	}
+
+	public Device getDevice() {
+		return this.device;
+	}
 }
