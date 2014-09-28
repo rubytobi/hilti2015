@@ -108,4 +108,8 @@ public class Project {
 	public ProjectTyp getProjectTyp() {
 		return this.projectTyp;
 	}
+
+	public Customer getCustomer() {
+		return this.customer;
+	}
 }
