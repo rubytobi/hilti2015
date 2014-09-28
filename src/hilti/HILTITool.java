@@ -1,0 +1,265 @@
+package hilti;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import datatypes.Customer;
+import datatypes.Device;
+import datatypes.ProjectTyp;
+import datatypes.Store;
+import UI.UIFrame;
+import UI.UILogin;
+import bigData.Cluster;
+import bigData.Engine;
+import datatypes.Location;
+import datatypes.Project;
+
+public class HILTITool {
+	public static List<Customer> customers = new ArrayList<Customer>();
+	public static List<Location> locations = new ArrayList<Location>();
+	public static List<Device> devices = new ArrayList<Device>();
+	public static List<Project> projects = new ArrayList<Project>();
+	public static List<Cluster> clusters = new ArrayList<Cluster>();
+	public static List<Store> stores = new ArrayList<Store>();
+	public static List<ProjectTyp> projecttypes = new ArrayList<ProjectTyp>();
+
+	public static void main(String[] args) {
+		new HILTITool();
+		new UIFrame();
+		new UILogin();
+	}
+
+	public HILTITool() {
+		loadDB();
+
+		System.out.println("\n## Cluster the locations");
+		List<Cluster> clusters = Engine.clusterLocations(locations);
+
+		System.out.println("\n## Try to match known projects and clusters");
+		Engine.matchKnownLocations(clusters, projects);
+
+		System.out
+				.println("\n## Try to recognise projects and stores on moving data by devices");
+		Engine.recogniseLocations(clusters, projects);
+	}
+
+	public Customer findCustomer(int id) {
+		for (Customer c : customers) {
+			if (c.getId() == id) {
+				return c;
+			}
+		}
+
+		return null;
+	}
+
+	public Device findDevice(int id) {
+		for (Device d : devices) {
+			if (d.getId() == id) {
+				return d;
+			}
+		}
+
+		return null;
+	}
+
+	public Project findProject(int id) {
+		for (Project p : projects) {
+			if (p.getId() == id) {
+				return p;
+			}
+		}
+
+		return null;
+	}
+
+	public ProjectTyp findProjectTyp(int id) {
+		for (ProjectTyp pt : projecttypes) {
+			if (pt.getId() == id) {
+				return pt;
+			}
+		}
+
+		return null;
+	}
+
+	private void loadDB() {
+		Connection con = null;
+		try {
+			Class.forName("org.sqlite.JDBC");
+			con = DriverManager.getConnection("jdbc:sqlite:psseDB.sqlite");
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+
+		System.out.println("Opened database successfully");
+
+		try {
+			// Projekttypen
+			loadProjectTyps(con);
+
+			// Kunden
+			loadCustomers(con);
+
+			// Projekt, verknüpfen mit ProjektTyp
+			loadProjects(con);
+
+			// Gerät, verknüpfen mit Kunde, Projekt, ProjektTyp und Store
+			loadDevices(con);
+
+			// Positionsdaten
+			loadLocations(con);
+
+			// MAp füllen
+			loadMap(con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		System.out.println("Database fully loaded and linked.");
+	}
+
+	private void loadMap(Connection con) throws SQLException {
+		// Locationpaare abfragen für Devices on map
+		Statement stmt = con.createStatement();
+		String sql = "SELECT pos1.Latitude, pos1.Longitude,pos2.Latitude,pos2.Longitude FROM (SELECT p1.Latitude, p1.Longitude, pg1.GeraetID  FROM Position p1, Position_Geraet pg1 WHERE p1.ID = pg1.PositionID AND pg1.Datum = '2014-09-18 10:00:00') AS pos1 INNER JOIN  (SELECT p1.Latitude, p1.Longitude, pg1.GeraetID  FROM Position p1, Position_Geraet pg1 WHERE p1.ID = pg1.PositionID AND pg1.Datum = '2014-09-18 16:00:00') AS pos2 ON pos1.GeraetID = pos2.GeraetID";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		try {
+			UIFrame.writeToolsToFile(rs);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadProjectTyps(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT ID, Bezeichnung, AnzPersonen"
+				+ " FROM ProjektTyp p";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			int projectTypId = rs.getInt("ID");
+			String description = rs.getString("Bezeichnung");
+			int countEmployees = rs.getInt("AnzPersonen");
+
+			ProjectTyp p = new ProjectTyp(projectTypId, description,
+					description, countEmployees);
+
+			projecttypes.add(p);
+		}
+	}
+
+	private void loadProjects(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT Latitude, Longitude, pr.ID, KundeID, ProjektTypID, Anwendungsbereich, PositionID, AnzPersonen, EndDatum"
+				+ " FROM Projekt pr, Position po"
+				+ " WHERE pr.PositionID = po.ID";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			double latitude = rs.getDouble("Latitude");
+			double longitude = rs.getDouble("Longitude");
+			int customerID = rs.getInt("KundeID");
+			int projectTypID = rs.getInt("ProjektTypID");
+			int ID = rs.getInt("ID");
+			String scope = rs.getString("Anwendungsbereich");
+			int anzPersonen = rs.getInt("AnzPersonen");
+			Date end = rs.getDate("EndDatum");
+
+			Project p = new Project(ID, scope, anzPersonen, end);
+
+			Customer c = findCustomer(customerID);
+			p.linkCustomer(c);
+
+			Location l = new Location(latitude, longitude);
+			p.linkLocation(l);
+
+			ProjectTyp pt = findProjectTyp(projectTypID);
+			p.linkProjectTyp(pt);
+
+			projects.add(p);
+		}
+	}
+
+	private void loadLocations(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT p.Latitude, p.Longitude, p.ID, g.ID AS GeraetID"
+				+ " FROM Position p, Geraet g, Position_Geraet pg"
+				+ " WHERE p.ID = pg.PositionID AND pg.GeraetID = g.ID";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			double latitude = rs.getDouble("Latitude");
+			double longitude = rs.getDouble("Longitude");
+			int geraetID = rs.getInt("GeraetID");
+
+			Location location = new Location(latitude, longitude);
+
+			Device d = findDevice(geraetID);
+			if (d != null) {
+				d.linkLocation(location);
+			}
+
+			locations.add(location);
+		}
+	}
+
+	private void loadDevices(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID FROM Geraet";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			int id = rs.getInt("ID");
+			String artNr = rs.getString("ArtNr");
+			String bezeichnung = rs.getString("Bezeichnung");
+			boolean zubehoer = rs.getBoolean("Zubehoer");
+			int kundeID = rs.getInt("KundeID");
+			int projectTypId = rs.getInt("ProjektTypID");
+
+			Device d = new Device(id, artNr, bezeichnung, zubehoer,
+					projectTypId);
+
+			Customer c = findCustomer(kundeID);
+			if (c != null) {
+				c.link(d);
+			}
+
+			ProjectTyp pt = findProjectTyp(projectTypId);
+			if (pt != null) {
+				pt.linkDevice(d);
+			}
+
+			devices.add(d);
+		}
+	}
+
+	private void loadCustomers(Connection con) throws SQLException {
+		Statement stmt = con.createStatement();
+		String sql = "SELECT Kunde.ID, AnzMitarbeiter, Flottenmgmt, Latitude, Longitude, Name FROM Kunde INNER JOIN Position ON Kunde.PositionID = Position.ID";
+		ResultSet rs = stmt.executeQuery(sql);
+
+		while (rs.next()) {
+			int anzMitarbeiter = rs.getInt("AnzMitarbeiter");
+			boolean flottenmgmt = rs.getBoolean("Flottenmgmt");
+			int id = rs.getInt("ID");
+			double latitude = rs.getDouble("Latitude");
+			double longitude = rs.getDouble("Longitude");
+			String name = rs.getString("Name");
+
+			Customer customer = new Customer(id, anzMitarbeiter, flottenmgmt,
+					new Location(latitude, longitude), name);
+			customers.add(customer);
+		}
+	}
+}
