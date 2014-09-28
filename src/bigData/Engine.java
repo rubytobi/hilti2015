@@ -320,6 +320,17 @@ public class Engine {
 
 		return devices;
 	}
+	
+	public static int getNumberOfProjectsInSameCat(Project p){
+		List <Project> pList = p.getCustomer().getProjects();
+		int count = 0;
+		for(Project pOld : pList){
+			if(pOld.getProjectTyp().equals(p.getProjectTyp())){
+				count++;
+			}
+		}
+		return count;
+	}
 
 	public List<Device> missingDevices(Project p, ProjectTyp typ) {
 		List<Device> missing = new ArrayList<Device>();
