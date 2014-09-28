@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -140,7 +142,7 @@ public class HILTITool {
 			loadLocations(con);
 
 			// Servicedaten
-			loadServices(con);
+			// loadServices(con);
 
 			// MAp füllen
 			loadMap(con);
@@ -198,8 +200,16 @@ public class HILTITool {
 			int ID = rs.getInt("ID");
 			String scope = rs.getString("Anwendungsbereich");
 			int anzPersonen = rs.getInt("AnzPersonen");
-			Date end = rs.getDate("EndDatum");
+			String endString = rs.getString("EndDatum");
 
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd H:m:s");
+			Date end = new Date();
+			try {
+				end = sdf.parse(endString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Project p = new Project(ID, scope, anzPersonen, end);
 
 			Customer c = findCustomer(customerID);

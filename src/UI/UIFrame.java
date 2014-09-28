@@ -58,6 +58,7 @@ public class UIFrame extends JFrame implements ItemListener {
 
 	private static Vector<Cluster> lstClusters = new Vector<Cluster>();
 	private static Vector<Store> lstStores = new Vector<Store>();
+	private static Vector<Project> lstProjects = new Vector<Project>();
 	private JTable tableTools;
 
 	private JCheckBox chckbxShowTools;
@@ -66,6 +67,7 @@ public class UIFrame extends JFrame implements ItemListener {
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
 	private JList<Store> listStores;
+	private JList listProjects;
 
 	public static int ZOOM_DETAILED = 18;
 
@@ -181,16 +183,15 @@ public class UIFrame extends JFrame implements ItemListener {
 		pnlMapControls.add(chckbxShowProjects);
 
 		JPanel pnlProjects = new JPanel();
-		pnlProjects.setLayout(null);
 		pnlProjects.setBorder(new TitledBorder(UIManager
-				.getBorder("TitledBorder.border"), "Located projects",
+				.getBorder("TitledBorder.border"), "Projects",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlProjects.setBounds(614, 279, 262, 123);
+		pnlProjects.setBounds(622, 279, 262, 123);
 		pnlMain.add(pnlProjects);
+		pnlProjects.setLayout(new BorderLayout(0, 0));
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 16, 250, 100);
-		pnlProjects.add(scrollPane);
+		listProjects = new JList(lstProjects);
+		pnlProjects.add(listProjects, BorderLayout.CENTER);
 
 		listStores.addMouseListener(new MouseAdapter() {
 			@Override
@@ -216,6 +217,10 @@ public class UIFrame extends JFrame implements ItemListener {
 		}
 		for (Store s : HILTITool.stores) {
 			lstStores.add(s);
+		}
+
+		for (Project p : HILTITool.projects) {
+			lstProjects.add(p);
 		}
 
 		// WRITE THE JAVASCRIPT FILE TO READ IN MAPVIEW
