@@ -129,10 +129,9 @@ public class UIProjectView extends JFrame implements LoadListener {
 
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ArtNo", "Descritpion", "Status", "%" }));
+				new String[] { "ArtNo", "Descritpion" }));
 		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
-		tableRec.getColumnModel().getColumn(3).setPreferredWidth(25);
 
 		JScrollPane scrollPaneRec = new JScrollPane(tableRec);
 		scrollPaneRec.setPreferredSize(new Dimension(400, 100));
@@ -227,7 +226,14 @@ public class UIProjectView extends JFrame implements LoadListener {
 	}
 
 	public void update() {
-		// TODO Auto-generated method stub
+		List<Device> allDevices = project.getProjectTyp().getDevices();
+		allDevices.removeAll(project.getDevices());
+		
+		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
+		for(Device d: allDevices){
+			dtm.addRow(rowData)
+		}
+		
 
 	}
 

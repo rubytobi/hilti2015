@@ -52,9 +52,8 @@ public class UIFrame extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// public static final String PATH_TO_PROJECT_FOLDER =
-	// "file:///Users/marius/Documents/AndEngineWorkspace/RecEngine/";
-	public static final String PATH_TO_PROJECT_FOLDER = "E:/Dropbox/PSSE Gruppe/RecEngine/";
+	public static final String PATH_TO_PROJECT_FOLDER = "file:///Users/marius/Documents/github/hilti2015/";
+	//public static final String PATH_TO_PROJECT_FOLDER = "E:/Dropbox/PSSE Gruppe/RecEngine/";
 
 	private static Vector<Cluster> lstClusters = new Vector<Cluster>();
 	private static Vector<Store> lstStores = new Vector<Store>();
