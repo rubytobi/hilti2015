@@ -185,11 +185,11 @@ public class UILogin extends JFrame {
 				} else if (selectedRole == ROLE_MANAGER) {
 					if (p != null) {
 						// TODO
-						new UIProjectViewWorker(p, null);
+						new UIProjectViewManager(p, null);
 						dispose();
 					} else if (cluster != null) {
 						// TODO
-						new UIProjectRecognizedWorker(cluster, customer);
+						// new UIProjectRecognizedManager(cluster, customer);
 						dispose();
 					}
 				}

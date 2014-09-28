@@ -142,7 +142,7 @@ public class HILTITool {
 			loadLocations(con);
 
 			// Servicedaten
-			// loadServices(con);
+			loadServices(con);
 
 			// MAp füllen
 			loadMap(con);
@@ -301,7 +301,7 @@ public class HILTITool {
 
 	private void loadServices(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
-		String sql = "SELECT ID, KundeID, ProjektID, GeraetID, typ, Preis FROM Service";
+		String sql = "SELECT ID, KundeID, ProjektID, GeraetID, Typ, Preis FROM Service";
 		ResultSet rs = stmt.executeQuery(sql);
 
 		while (rs.next()) {
@@ -309,7 +309,7 @@ public class HILTITool {
 			int kundeID = rs.getInt("KundeID");
 			int projectId = rs.getInt("ProjektID");
 			int deviceId = rs.getInt("GeraetID");
-			String typ = rs.getString("typ");
+			String typ = rs.getString("Typ");
 			double price = rs.getDouble("Preis");
 
 			Service s = new Service(id, price, typ);

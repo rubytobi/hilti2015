@@ -13,7 +13,7 @@ public class Customer {
 	private List<Store> stores = new ArrayList<Store>();
 	private List<Project> projects = new ArrayList<Project>();
 	private String name;
-	private List<Service> services;
+	private List<Service> services = new ArrayList<Service>();
 
 	public Customer(int id, int anzMitarbeiter, boolean flottenmgmt,
 			Location location, String name) {

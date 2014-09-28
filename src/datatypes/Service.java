@@ -5,6 +5,9 @@ public class Service {
 	private Customer customer;
 	private Project project;
 	private Device device;
+	/*
+	 * REP = reparatur, AUS = austausch
+	 */
 	private String typ;
 	private double price;
 
