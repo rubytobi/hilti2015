@@ -282,12 +282,14 @@ public class Engine {
 				maxPoints += 1;
 
 				if (typ.equals(p.getProjectTyp())) {
-					if (p.getEnd().after(oneYear)) {
-						System.out.println("[H=1] " + p);
-						points += 1;
-					} else {
-						System.out.println("[H=0.5] " + p);
-						points += 0.5;
+					if(p.getEnd() != null){
+						if (p.getEnd().after(oneYear)) {
+							System.out.println("[H=1] " + p);
+							points += 1;
+						} else {
+							System.out.println("[H=0.5] " + p);
+							points += 0.5;
+						}
 					}
 				} else {
 					System.out.println("[H=0] " + p);
@@ -392,13 +394,13 @@ public class Engine {
 	public static List<Recommendation> generateRec(Project project) {
 		List<Recommendation> recs = new ArrayList<Recommendation>();
 
-		// fehlende geräte anhand des projektes sammeln
+		// fehlende gerï¿½te anhand des projektes sammeln
 		List<Device> missing = detectMissingDevices(project);
 
 		for (Device d : missing) {
 			recs.add(new Recommendation(1, d));
 
-			// geräte aus der gleichen produktlinie
+			// gerï¿½te aus der gleichen produktlinie
 			List<Device> similar = devicesFromProductLine(d.getBezeichnung());
 
 			for (Device sD : similar) {
@@ -410,7 +412,7 @@ public class Engine {
 
 		Collections.sort(recs);
 
-		// geräte die in stores lagern werden ausgefiltert
+		// gerï¿½te die in stores lagern werden ausgefiltert
 		// TODO aber nicht jetzt
 
 		return recs;

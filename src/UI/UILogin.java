@@ -175,22 +175,22 @@ public class UILogin extends JFrame {
 						HILTITool.clusters);
 
 				if (selectedRole == ROLE_WORKER) {
-					if (p != null) {
-						new UIProjectViewWorker(p, null);
-						dispose();
-					} else if (cluster != null) {
+//					if (p != null) {
+//						new UIProjectViewWorker(p, null);
+//						dispose();
+//					} else if (cluster != null) {
 						new UIProjectRecognizedWorker(cluster, customer);
-						dispose();
-					}
+						//dispose();
+					//}
 				} else if (selectedRole == ROLE_MANAGER) {
 					if (p != null) {
 						// TODO
 						new UIProjectViewManager(p, null);
-						dispose();
+						//dispose();
 					} else if (cluster != null) {
 						// TODO
 						//new UIProjectRecognizedManager(cluster, customer);
-						dispose();
+						//dispose();
 					}
 				}
 			}

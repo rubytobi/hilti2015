@@ -1,5 +1,7 @@
 package UI;
 
+import hilti.HILTITool;
+
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 
@@ -34,6 +36,7 @@ import datatypes.Project;
 
 import javax.swing.BoxLayout;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
@@ -138,6 +141,33 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Descritpion" }));
+		tableRec.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                String s = table.getModel().getValueAt(row, 0).toString();
+                
+                List<Device> list = Engine.detectMissingDevices(project);
+                
+                boolean z = false;
+                
+                for(Device d: list){
+        			if(d.getArtNr().equals(s) && d.isZubehoer()){
+        				z = true;
+        				break;
+        			}
+        		}
+                if(z == true){
+                	c.setForeground(Color.GRAY);
+                }else{
+                	c.setForeground(Color.BLACK);
+                }
+                
+                return c;
+            }
+        });
 		tableRec.getColumnModel().getColumn(0).setPreferredWidth(80);
 		tableRec.getColumnModel().getColumn(1).setPreferredWidth(140);
 
@@ -261,13 +291,24 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 	}
 
 	private void putRecommendations() {
-		List<Recommendation> recs = Engine.generateRec(project);
-
+		//List<Recommendation> recs = Engine.generateRec(project);
+		
+		
+//		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
+//
+//		for (Recommendation r : recs) {
+//			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
+//					r.getDevice().getBezeichnung() });
+//		}
+		
+		List<Device> recs = Engine.detectMissingDevices(project);
+		
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
 
-		for (Recommendation r : recs) {
-			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
-					r.getDevice().getBezeichnung() });
+		for (Device d : recs) {
+			dtm.addRow(new Object[] { d.getArtNr(),
+					d.getBezeichnung() });
+			
 		}
 	}
 
