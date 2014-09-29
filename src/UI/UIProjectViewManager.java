@@ -20,7 +20,7 @@ import bigData.Engine;
 import bigData.Rank;
 import bigData.Recommendation;
 
-import com.sun.javafx.scene.text.HitInfo;
+
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserFactory;
 import com.teamdev.jxbrowser.chromium.events.FailLoadingEvent;
@@ -160,7 +160,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		JPanel pnlOldProjects = new JPanel();
 		pnlInfo.add(pnlOldProjects);
 
-		JLabel lblDuration = new JLabel("If your project duration is ");
+		JLabel lblDuration = new JLabel("If you plan on using these devices");
 		lblDuration.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 		lblDuration.setForeground(Color.BLACK);
 		pnlOldProjects.add(lblDuration);
@@ -186,7 +186,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		pnlInfo.add(valSavings);
 
 		JLabel lblSavingsForAn = new JLabel(
-				"saved for an average project length of 12 days");
+				"monthly costs for Fleetservice with this setup");
 		lblSavingsForAn.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblSavingsForAn.setForeground(Color.BLACK);
 		lblSavingsForAn.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
@@ -250,7 +250,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		for (Device d : devices) {
 			model.addRow(new String[] { d.getArtNr(), d.getScope(),
-					d.getPrice() + "€", d.getPriceFM() + "€" });
+					d.getPrice() + "EUR", d.getPriceFM() + "EUR" });
 		}
 
 	}
@@ -266,7 +266,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		for (Service s : services) {
 			model.addRow(new String[] { s.getDevice().getArtNr() + "",
-					s.getDevice().getScope(), s.getTyp(), s.getPrice() + "€" });
+					s.getDevice().getScope(), s.getTyp(), s.getPrice() + "EUR" });
 		}
 
 	}
@@ -320,6 +320,6 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		days = Engine.round(days, 0);
 		amount = Engine.round(amount, 2);
 		valDuration.setText("less than " + days + " days");
-		valSavings.setText(amount + "€");
+		valSavings.setText(amount + "EUR");
 	}
 }
