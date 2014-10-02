@@ -17,7 +17,7 @@ import datatypes.Device;
 import datatypes.ProjectTyp;
 import datatypes.Service;
 import datatypes.Store;
-import UI.UIFrame;
+import UI.UIBackend;
 import UI.UILogin;
 import UI.UIProjectRecognizedWorker;
 import UI.UIProjectViewWorker;
@@ -35,14 +35,14 @@ public class HILTITool {
 	public static List<Service> services = new ArrayList<Service>();
 	public static List<Store> stores = new ArrayList<Store>();
 	public static List<ProjectTyp> projecttypes = new ArrayList<ProjectTyp>();
-	public static UIFrame uiframe = null;
+	public static UIBackend uiframe = null;
 	public static UILogin uilogin = null;
 	public static UIProjectRecognizedWorker uiprojectrecognized = null;
 	public static UIProjectViewWorker uiprojectview = null;
 
 	public static void main(String[] args) {
 		new HILTITool();
-		new UIFrame();
+		new UIBackend();
 		new UILogin();
 	}
 
@@ -161,7 +161,7 @@ public class HILTITool {
 		ResultSet rs = stmt.executeQuery(sql);
 
 		try {
-			UIFrame.writeToolsToFile(rs);
+			UIBackend.writeToolsToFile(rs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

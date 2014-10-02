@@ -93,7 +93,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		}
 		this.setSize(400, 600);
 
-		browser.loadURL(UIFrame.PATH_TO_PROJECT_FOLDER + "map_tools.html");
+		browser.loadURL(UIBackend.PATH_TO_PROJECT_FOLDER + "map_tools.html");
 		browser.addLoadListener(this);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -277,7 +277,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		browser.executeJavaScript("map.panTo(" + "new google.maps.LatLng("
 				+ (cluster.getCenter().getLatitude() + 0.00025f) + ","
 				+ (cluster.getCenter().getLongitude() - 0.001f) + ")" + ")");
-		browser.executeJavaScript("map.setZoom(" + (UIFrame.ZOOM_DETAILED)
+		browser.executeJavaScript("map.setZoom(" + (UIBackend.ZOOM_DETAILED)
 				+ ")");
 	}
 

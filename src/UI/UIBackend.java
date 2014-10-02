@@ -46,31 +46,39 @@ import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
 
-public class UIFrame extends JFrame implements ItemListener {
+/**
+ * 
+ * Grafische Oberfläche für das Backend. Enthält: MapView, Clusters, Projects,
+ * Stores
+ *
+ */
+public class UIBackend extends JFrame implements ItemListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	 public static final String PATH_TO_PROJECT_FOLDER = "file:///Users/marius/Documents/github/hilti2015/";
-	// public static final String PATH_TO_PROJECT_FOLDER = "E:/Dropbox/PSSE Gruppe/RecEngine/";
+	public static final String PATH_TO_PROJECT_FOLDER = "N:/PSSEWorkspace/hilti2015/";
+	// public static final String PATH_TO_PROJECT_FOLDER =
+	// "E:/Dropbox/PSSE Gruppe/RecEngine/";
 
+	
+	// Vektoren um die JLists einfacher zu befüllen
 	private static Vector<Cluster> lstClusters = new Vector<Cluster>();
 	private static Vector<Store> lstStores = new Vector<Store>();
 	private static Vector<Project> lstProjects = new Vector<Project>();
+	
+	// UI 
 	private JTable tableTools;
-
 	private JCheckBox chckbxShowTools;
 	private JCheckBox chckbxShowProjects;
-
-	// BROWSER
-	private final Browser browser = BrowserFactory.create();
 	private JList<Store> listStores;
 	private JList listProjects;
 
+	// BROWSER
+	private final Browser browser = BrowserFactory.create();
+	
+	// MAPS
 	public static int ZOOM_DETAILED = 18;
-
-	public UIFrame() throws HeadlessException {
+	
+	public UIBackend() throws HeadlessException {
 		super();
 
 		// SET SYSTEM LOOK AND FEEL
@@ -78,11 +86,10 @@ public class UIFrame extends JFrame implements ItemListener {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		// SWING WINDOW SETUP
+		// --- SWING WINDOW SETUP ---
 		// FRAME
 		this.setSize(1280, 700);
 		this.setLocationRelativeTo(null);
@@ -99,6 +106,7 @@ public class UIFrame extends JFrame implements ItemListener {
 		this.getContentPane().add(pnlMain, BorderLayout.CENTER);
 		pnlMain.add(pnlMap);
 
+		// DEVICES PANEL
 		JPanel pnlDevices = new JPanel();
 		pnlDevices.setBorder(new TitledBorder(UIManager
 				.getBorder("TitledBorder.border"), "Tools at location",
@@ -111,6 +119,7 @@ public class UIFrame extends JFrame implements ItemListener {
 		scrollPaneTableDevices.setBounds(6, 16, 357, 229);
 		pnlDevices.add(scrollPaneTableDevices);
 
+		// TOOLS TABELLE
 		tableTools = new JTable();
 		scrollPaneTableDevices.setViewportView(tableTools);
 		tableTools.setModel(new DefaultTableModel(new Object[][] {},
@@ -118,6 +127,7 @@ public class UIFrame extends JFrame implements ItemListener {
 		tableTools.getColumnModel().getColumn(0).setPreferredWidth(150);
 		tableTools.getColumnModel().getColumn(0).setMinWidth(150);
 
+		// CLUSTER PANEL
 		JPanel pnlClusters = new JPanel();
 		pnlClusters.setBorder(new TitledBorder(UIManager
 				.getBorder("TitledBorder.border"), "Located clusters",
@@ -134,12 +144,14 @@ public class UIFrame extends JFrame implements ItemListener {
 		JList<Cluster> listClusters = new JList<Cluster>(lstClusters);
 		scrollPaneProjects.setViewportView(listClusters);
 
+		// MouseListener um bei Doppelklick zu zoomen
 		listClusters.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				JList<Cluster> list = (JList<Cluster>) evt.getSource();
 				if (evt.getClickCount() == 2) {
 					int i = list.locationToIndex(evt.getPoint());
 					Cluster c = lstClusters.get(i);
+					// Javascript code im browser ausführen (MAPS API v3)
 					browser.executeJavaScript("map.panTo("
 							+ "new google.maps.LatLng("
 							+ c.getCenter().getLatitude() + ","
@@ -151,6 +163,7 @@ public class UIFrame extends JFrame implements ItemListener {
 			}
 		});
 
+		// STORES PANEL
 		JPanel pnlStores = new JPanel();
 		pnlStores.setBorder(new TitledBorder(UIManager
 				.getBorder("TitledBorder.border"), "Located Stores",
@@ -163,10 +176,11 @@ public class UIFrame extends JFrame implements ItemListener {
 		scrollPaneStores.setBounds(6, 16, 250, 100);
 		pnlStores.add(scrollPaneStores);
 
-		// STORE LIST
+		// STORES LIST
 		listStores = new JList<Store>(lstStores);
 		scrollPaneStores.setViewportView(listStores);
 
+		// MAP CONTROLS
 		JPanel pnlMapControls = new JPanel();
 		pnlMapControls.setBackground(SystemColor.menu);
 		pnlMapControls.setBorder(new TitledBorder(new EtchedBorder(
@@ -181,6 +195,8 @@ public class UIFrame extends JFrame implements ItemListener {
 		chckbxShowProjects.addItemListener(this);
 		pnlMapControls.add(chckbxShowProjects);
 
+		
+		// PROJECTS PANEL
 		JPanel pnlProjects = new JPanel();
 		pnlProjects.setBorder(new TitledBorder(UIManager
 				.getBorder("TitledBorder.border"), "Projects",
@@ -192,6 +208,7 @@ public class UIFrame extends JFrame implements ItemListener {
 		listProjects = new JList(lstProjects);
 		pnlProjects.add(listProjects, BorderLayout.CENTER);
 
+		// MouseListener um bei Doppelklick zu zoomen
 		listStores.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
@@ -210,7 +227,7 @@ public class UIFrame extends JFrame implements ItemListener {
 			}
 		});
 
-		// ADD ALL THE PROJECTS & STORES TO THE MAP
+		// Alle Projekte und Stores zu den Listen hinzufügen um UI zu befüllen
 		for (Cluster c : HILTITool.clusters) {
 			lstClusters.add(c);
 		}
@@ -222,14 +239,14 @@ public class UIFrame extends JFrame implements ItemListener {
 			lstProjects.add(p);
 		}
 
-		// WRITE THE JAVASCRIPT FILE TO READ IN MAPVIEW
+		// Marker File schreiben
 		try {
 			writeMarkersToFile();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
+		// Die Map im Browser laden
 		browser.loadURL(PATH_TO_PROJECT_FOLDER + "map_full.html");
 
 		this.setVisible(true);
@@ -240,6 +257,10 @@ public class UIFrame extends JFrame implements ItemListener {
 		toggleMarkers();
 	}
 
+	/*
+	 * Schaltet Markers auf der Map aus / ein
+	 * Führt eigens geschriebene Javascript Funktion aus
+	 */
 	private void toggleMarkers() {
 		if (chckbxShowProjects.isSelected()) {
 			browser.executeJavaScript("markersOn(" + ")");
@@ -248,6 +269,10 @@ public class UIFrame extends JFrame implements ItemListener {
 		}
 	}
 
+	/**
+	 * Befüllt den JTable mit Informationen
+	 * @param devices
+	 */
 	public void addToolsToTable(List<Device> devices) {
 		System.out.println("LIST SIZE: " + devices.size());
 
@@ -267,12 +292,18 @@ public class UIFrame extends JFrame implements ItemListener {
 
 	}
 
+	/**
+	 * Erstellt die markers.js Datei welche alle Clusterzentren und Stores
+	 * als Marker in Google Maps API v3 Format anlegt.
+	 * @throws IOException
+	 */
 	public static void writeMarkersToFile() throws IOException {
+		
+		// Javascript Datei anlegen
 		File fout = new File("markers.js");
 		FileOutputStream fos = new FileOutputStream(fout);
-
+		
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-
 		bw.write("var marker, i; var markers = [];var locations = [];");
 		bw.newLine();
 		bw.write("function addMarkers(){");
@@ -280,6 +311,7 @@ public class UIFrame extends JFrame implements ItemListener {
 		bw.write("locations = [");
 		bw.newLine();
 
+		// Alle Cluster im LatLong Format in die Datei schreiben
 		for (Cluster c : lstClusters) {
 			double x = c.getCenter().getLatitude();
 			double y = c.getCenter().getLongitude();
@@ -288,6 +320,7 @@ public class UIFrame extends JFrame implements ItemListener {
 			bw.newLine();
 		}
 
+		// Alle Stores im LatLong Format in die Datei schreiben
 		for (int i = 0; i < lstStores.size(); i++) {
 			double x = lstStores.get(i).getLocation().getLatitude();
 			double y = lstStores.get(i).getLocation().getLongitude();
@@ -299,14 +332,15 @@ public class UIFrame extends JFrame implements ItemListener {
 		bw.write("];");
 		bw.newLine();
 
+		// Markers in Array Speichern um sie später iterativ Ein- / Ausblenden zu können
 		bw.write("for (i = 0; i < locations.length; i++) {  \r\n"
 				+ "    marker = new google.maps.Marker({\r\n"
 				+ "        position: new google.maps.LatLng(locations[i][0], locations[i][1]), \r\n"
 				+ "        map: map,\r\n"
-				+ "        visible: false, // or false. Whatever you need.\r\n"
+				+ "        visible: false \r\n"
 				+ "        icon: locations[i][2]\r\n" + "    }); ");
 		bw.newLine();
-		bw.write("markers.push(marker); // save all markers");
+		bw.write("markers.push(marker);");
 		bw.newLine();
 		bw.write("}");
 		bw.newLine();
@@ -315,6 +349,12 @@ public class UIFrame extends JFrame implements ItemListener {
 		bw.close();
 	}
 
+	/**
+	 * Schreibt Javascript Datei mit allen Bewegungsdaten der Tools in die tools.js Datei
+	 * @param rs SQL ResultSet that contains the Lat & Long of the devices
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	public static void writeToolsToFile(ResultSet rs) throws IOException,
 			SQLException {
 		File fout = new File("tools.js");
@@ -339,6 +379,7 @@ public class UIFrame extends JFrame implements ItemListener {
 			bw.write("];");
 			bw.newLine();
 
+			// Polyline von zusammenhängenden Devicepostionen (10:00 Uhr und 16:00 Uhr)
 			bw.write("var toolPath = new google.maps.Polyline({");
 			bw.newLine();
 			bw.write("path: tool,geodesic: true,strokeColor: '#FF0000',strokeOpacity: 1,strokeWeight: 2");
