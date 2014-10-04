@@ -39,8 +39,12 @@ public class HILTITool {
 	public static UILogin uilogin = null;
 	public static UIProjectRecognizedWorker uiprojectrecognized = null;
 	public static UIProjectViewWorker uiprojectview = null;
+	public static final String PATH_TO_PROJECT_FOLDER = System
+			.getProperty("user.dir") + "/";
 
 	public static void main(String[] args) {
+		System.out.println("Working Directory = " + PATH_TO_PROJECT_FOLDER);
+
 		new HILTITool();
 		new UIBackend();
 		new UILogin();

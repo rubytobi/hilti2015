@@ -50,22 +50,18 @@ import javax.swing.BoxLayout;
  * 
  * Grafische Oberfläche für das Backend. Enthält: MapView, Clusters, Projects,
  * Stores
- *
+ * 
  */
 public class UIBackend extends JFrame implements ItemListener {
 
 	private static final long serialVersionUID = 1L;
-	public static final String PATH_TO_PROJECT_FOLDER = "N:/PSSEWorkspace/hilti2015/";
-	// public static final String PATH_TO_PROJECT_FOLDER =
-	// "E:/Dropbox/PSSE Gruppe/RecEngine/";
 
-	
 	// Vektoren um die JLists einfacher zu befüllen
 	private static Vector<Cluster> lstClusters = new Vector<Cluster>();
 	private static Vector<Store> lstStores = new Vector<Store>();
 	private static Vector<Project> lstProjects = new Vector<Project>();
-	
-	// UI 
+
+	// UI
 	private JTable tableTools;
 	private JCheckBox chckbxShowTools;
 	private JCheckBox chckbxShowProjects;
@@ -74,10 +70,10 @@ public class UIBackend extends JFrame implements ItemListener {
 
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
-	
+
 	// MAPS
 	public static int ZOOM_DETAILED = 18;
-	
+
 	public UIBackend() throws HeadlessException {
 		super();
 
@@ -195,7 +191,6 @@ public class UIBackend extends JFrame implements ItemListener {
 		chckbxShowProjects.addItemListener(this);
 		pnlMapControls.add(chckbxShowProjects);
 
-		
 		// PROJECTS PANEL
 		JPanel pnlProjects = new JPanel();
 		pnlProjects.setBorder(new TitledBorder(UIManager
@@ -247,7 +242,7 @@ public class UIBackend extends JFrame implements ItemListener {
 		}
 
 		// Die Map im Browser laden
-		browser.loadURL(PATH_TO_PROJECT_FOLDER + "map_full.html");
+		browser.loadURL(HILTITool.PATH_TO_PROJECT_FOLDER + "map_full.html");
 
 		this.setVisible(true);
 	}
@@ -258,8 +253,8 @@ public class UIBackend extends JFrame implements ItemListener {
 	}
 
 	/*
-	 * Schaltet Markers auf der Map aus / ein
-	 * Führt eigens geschriebene Javascript Funktion aus
+	 * Schaltet Markers auf der Map aus / ein Führt eigens geschriebene
+	 * Javascript Funktion aus
 	 */
 	private void toggleMarkers() {
 		if (chckbxShowProjects.isSelected()) {
@@ -271,6 +266,7 @@ public class UIBackend extends JFrame implements ItemListener {
 
 	/**
 	 * Befüllt den JTable mit Informationen
+	 * 
 	 * @param devices
 	 */
 	public void addToolsToTable(List<Device> devices) {
@@ -293,16 +289,17 @@ public class UIBackend extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Erstellt die markers.js Datei welche alle Clusterzentren und Stores
-	 * als Marker in Google Maps API v3 Format anlegt.
+	 * Erstellt die markers.js Datei welche alle Clusterzentren und Stores als
+	 * Marker in Google Maps API v3 Format anlegt.
+	 * 
 	 * @throws IOException
 	 */
 	public static void writeMarkersToFile() throws IOException {
-		
+
 		// Javascript Datei anlegen
 		File fout = new File("markers.js");
 		FileOutputStream fos = new FileOutputStream(fout);
-		
+
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 		bw.write("var marker, i; var markers = [];var locations = [];");
 		bw.newLine();
@@ -332,12 +329,12 @@ public class UIBackend extends JFrame implements ItemListener {
 		bw.write("];");
 		bw.newLine();
 
-		// Markers in Array Speichern um sie später iterativ Ein- / Ausblenden zu können
+		// Markers in Array Speichern um sie später iterativ Ein- / Ausblenden
+		// zu können
 		bw.write("for (i = 0; i < locations.length; i++) {  \r\n"
 				+ "    marker = new google.maps.Marker({\r\n"
 				+ "        position: new google.maps.LatLng(locations[i][0], locations[i][1]), \r\n"
-				+ "        map: map,\r\n"
-				+ "        visible: false \r\n"
+				+ "        map: map,\r\n" + "        visible: false \r\n"
 				+ "        icon: locations[i][2]\r\n" + "    }); ");
 		bw.newLine();
 		bw.write("markers.push(marker);");
@@ -350,8 +347,11 @@ public class UIBackend extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Schreibt Javascript Datei mit allen Bewegungsdaten der Tools in die tools.js Datei
-	 * @param rs SQL ResultSet that contains the Lat & Long of the devices
+	 * Schreibt Javascript Datei mit allen Bewegungsdaten der Tools in die
+	 * tools.js Datei
+	 * 
+	 * @param rs
+	 *            SQL ResultSet that contains the Lat & Long of the devices
 	 * @throws IOException
 	 * @throws SQLException
 	 */
@@ -379,7 +379,8 @@ public class UIBackend extends JFrame implements ItemListener {
 			bw.write("];");
 			bw.newLine();
 
-			// Polyline von zusammenhängenden Devicepostionen (10:00 Uhr und 16:00 Uhr)
+			// Polyline von zusammenhängenden Devicepostionen (10:00 Uhr und
+			// 16:00 Uhr)
 			bw.write("var toolPath = new google.maps.Polyline({");
 			bw.newLine();
 			bw.write("path: tool,geodesic: true,strokeColor: '#FF0000',strokeOpacity: 1,strokeWeight: 2");

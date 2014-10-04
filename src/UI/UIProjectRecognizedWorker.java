@@ -93,7 +93,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		}
 		this.setSize(400, 600);
 
-		browser.loadURL(UIBackend.PATH_TO_PROJECT_FOLDER + "map_tools.html");
+		browser.loadURL(HILTITool.PATH_TO_PROJECT_FOLDER + "map_tools.html");
 		browser.addLoadListener(this);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
