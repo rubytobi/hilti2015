@@ -279,17 +279,32 @@ public class Engine {
 
 			System.out.println(typ);
 			for (Project p : history) {
-				maxPoints += 1;
+				maxPoints += 1.5;
 
 				if (typ.equals(p.getProjectTyp())) {
-					if(p.getEnd() != null){
+					/*
+					 * Falls das Projekt abgeschlossen ist
+					 */
+					if (p.getEnd() != null) {
+						/*
+						 * Projekte innerhalb eines Jahres
+						 */
 						if (p.getEnd().after(oneYear)) {
 							System.out.println("[H=1] " + p);
 							points += 1;
 						} else {
+							/*
+							 * Projekte älter als ein Jahr
+							 */
 							System.out.println("[H=0.5] " + p);
 							points += 0.5;
 						}
+					} else {
+						/*
+						 * aktuelle Projekte!
+						 */
+						System.out.println("[H=1.5] " + p);
+						points += 1.5;
 					}
 				} else {
 					System.out.println("[H=0] " + p);
