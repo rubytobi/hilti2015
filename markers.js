@@ -15,7 +15,7 @@ for (i = 0; i < locations.length; i++) {
         position: new google.maps.LatLng(locations[i][0], locations[i][1]), 
         map: map,
         visible: false 
-        icon: locations[i][2]
+,        icon: locations[i][2]
     }); 
 markers.push(marker);
 }

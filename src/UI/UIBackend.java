@@ -334,7 +334,7 @@ public class UIBackend extends JFrame implements ItemListener {
 		bw.write("for (i = 0; i < locations.length; i++) {  \r\n"
 				+ "    marker = new google.maps.Marker({\r\n"
 				+ "        position: new google.maps.LatLng(locations[i][0], locations[i][1]), \r\n"
-				+ "        map: map,\r\n" + "        visible: false \r\n"
+				+ "        map: map,\r\n" + "        visible: false \r\n,"
 				+ "        icon: locations[i][2]\r\n" + "    }); ");
 		bw.newLine();
 		bw.write("markers.push(marker);");
