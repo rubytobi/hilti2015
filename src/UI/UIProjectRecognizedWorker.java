@@ -54,12 +54,13 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-
+/**
+ * 
+ * Übersichtsoberfläche für den Fall dass ein Projekt erkannt wurde
+ *
+ */
 public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
@@ -74,6 +75,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		this.cluster = cluster;
 		this.customer = customer;
 
+		// Liste der verfügbaren Projekttypen und deren Ranking abfragen
 		final List<Rank> match = Engine.matchProjectType(cluster,
 				HILTITool.projecttypes, customer);
 
@@ -93,6 +95,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		}
 		this.setSize(400, 600);
 
+		// Die Kartenansicht laden
 		browser.loadURL(HILTITool.PATH_TO_PROJECT_FOLDER + "map_tools.html");
 		browser.addLoadListener(this);
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -101,13 +104,13 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		getContentPane().add(pnlCenter);
 		pnlCenter.setLayout(new BoxLayout(pnlCenter, BoxLayout.Y_AXIS));
 
-		// SET THE MAP VIEW AND PAN TO LOCATION
+		// MapView Setup
 		JPanel pnlMap = new JPanel(new BorderLayout());
 		pnlMap.setPreferredSize(new Dimension(400, 200));
 		pnlCenter.add(pnlMap);
 		pnlMap.add(browser.getView().getComponent(), BorderLayout.CENTER);
 
-		// INFO PANEL
+		// Info Panel
 		JPanel pnlInfo = new JPanel();
 		pnlCenter.add(pnlInfo);
 		pnlInfo.setLayout(new BoxLayout(pnlInfo, BoxLayout.Y_AXIS));
@@ -131,6 +134,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlType.add(lblType);
 
+		// ComboBox welche die Projekttypen und deren Wahrscheinlichkeiten anzeigt (bester zuerst)
 		comboBoxProjectType = new JComboBox(match.toArray());
 		comboBoxProjectType.setPreferredSize(new Dimension(250, 20));
 		pnlType.add(comboBoxProjectType);
@@ -155,6 +159,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		JLabel label_1 = new JLabel(cluster.getDevices().size() + "");
 		pnlCount.add(label_1);
 
+		// JTable zum Anzeigen der Geräte an der Projektposition
 		tableTools = new JTable();
 		tableTools.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNr", "Bezeichnung" }));
@@ -172,30 +177,23 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				// Projekt anlegen und alle Verknüpfungen herstellen
 				Project p = new Project(HILTITool.projects.size(), "", customer
 						.getCountEmployees(), null);
 
@@ -214,6 +212,8 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 				HILTITool.projects.add(p);
 				System.out.println("Project added");
+				
+				// Die Projektansicht öffnen
 				new UIProjectViewWorker(p, rank);
 				dispose();
 			}
@@ -226,30 +226,23 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				// zurück zum Login
 				new UILogin();
 				dispose();
 			}
@@ -274,6 +267,7 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 	@Override
 	public void onFinishLoadingFrame(FinishLoadingEvent arg0) {
+		// Sobald die Karte komplett im Browser geladen wurde zur Projektposition bewegen
 		browser.executeJavaScript("map.panTo(" + "new google.maps.LatLng("
 				+ (cluster.getCenter().getLatitude() + 0.00025f) + ","
 				+ (cluster.getCenter().getLongitude() - 0.001f) + ")" + ")");
@@ -291,6 +285,10 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 
 	}
 
+	/**
+	 * Alle Geräte an der Projekposition dem JTable hinzufügen
+	 * @param devices Liste an Geräten die hinzugefügt werden soll
+	 */
 	public void addToolsToTable(List<Device> devices) {
 
 		System.out.println("LIST SIZE: " + devices.size());
@@ -303,11 +301,6 @@ public class UIProjectRecognizedWorker extends JFrame implements LoadListener {
 		for (Device d : devices) {
 			model.addRow(new String[] { d.getArtNr(), d.getScope() });
 		}
-
-	}
-
-	public void update() {
-		// TODO Auto-generated method stub
 
 	}
 

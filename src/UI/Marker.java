@@ -1,5 +1,9 @@
 package UI;
-
+/**
+ * 
+ * Temporaeres Speichern von GPS-Daten um diese in die Javascript Dateien zu schreiben
+ *
+ */
 public class Marker {
 	private double x,y;
 

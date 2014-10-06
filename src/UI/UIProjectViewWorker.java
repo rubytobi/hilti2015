@@ -44,11 +44,12 @@ import java.awt.Component;
 import java.util.List;
 import java.awt.Color;
 
+/**
+ * Oberfläche zum Anzeigen der Projektübersicht und den Empfehlungen
+ *
+ */
 public class UIProjectViewWorker extends JFrame implements LoadListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
@@ -74,7 +75,6 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.setSize(400, 600);
@@ -87,7 +87,7 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		getContentPane().add(pnlCenter);
 		pnlCenter.setLayout(new BoxLayout(pnlCenter, BoxLayout.Y_AXIS));
 
-		// SET THE MAP VIEW AND PAN TO LOCATION
+		// SET THE MAP VIEW
 		JPanel pnlMap = new JPanel(new BorderLayout());
 		pnlMap.setPreferredSize(new Dimension(400, 200));
 		pnlCenter.add(pnlMap);
@@ -119,9 +119,11 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		lblLocation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlLocation.add(lblLocation);
 
+		// Projektposition setzen
 		valLocation = new JLabel(project.getLocation().toString());
 		pnlLocation.add(valLocation);
 
+		// Gerätetabelle erstellen
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Description" }));
@@ -138,9 +140,12 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		lblRec.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pnlInfo.add(lblRec);
 
+		// Recommendationtabelle erstellen
 		tableRec = new JTable();
 		tableRec.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Descritpion" }));
+		
+		// Neuen Renderer setzen um Zubehörteile grau hervorzuheben
 		tableRec.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -205,6 +210,7 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		JPanel pnlSouth = new JPanel();
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
+		// Werte setzen
 		update();
 
 		setLocationRelativeTo(null);
@@ -213,24 +219,19 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 
 	@Override
 	public void onDocumentLoadedInFrame(FrameLoadEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onDocumentLoadedInMainFrame(LoadEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onFailLoadingFrame(FailLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onFinishLoadingFrame(FinishLoadingEvent arg0) {
+		// Wenn karte komplett geladen ist zur Projektposition bewegen
 		browser.executeJavaScript("map.panTo(" + "new google.maps.LatLng("
 				+ project.getLocation().getLatitude() + ","
 				+ project.getLocation().getLongitude() + ")" + ")");
@@ -239,16 +240,16 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 
 	@Override
 	public void onProvisionalLoadingFrame(ProvisionalLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onStartLoadingFrame(StartLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * Gerätetabelle befüllen
+	 * @param devices Liste mit dem Projekt assoziierten Geräten
+	 */
 	public void addToolsToTable(List<Device> devices) {
 
 		System.out.println("LIST SIZE: " + devices.size());
@@ -264,10 +265,12 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 
 	}
 
+	/**
+	 * Alle Werte setzen
+	 */
 	public void update() {
 		addToolsToTable(project.getDevices());
 		calculateOldProjects();
-		calculateSameDevices();
 
 		putRecommendations();
 
@@ -276,6 +279,10 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		valProjectType.setText(project.getProjectTyp().getDescription());
 	}
 
+	/**
+	 * TODO
+	 * @param d
+	 */
 	public void setPercentage(double d) {
 		label.setText(d + "%");
 
@@ -290,17 +297,10 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		}
 	}
 
-	private void putRecommendations() {
-		//List<Recommendation> recs = Engine.generateRec(project);
-		
-		
-//		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
-//
-//		for (Recommendation r : recs) {
-//			dtm.addRow(new Object[] { r.getDevice().getArtNr(),
-//					r.getDevice().getBezeichnung() });
-//		}
-		
+	/**
+	 * Recommendations abfragen und in der Tabelle setzen
+	 */
+	private void putRecommendations() {		
 		List<Device> recs = Engine.detectMissingDevices(project);
 		
 		DefaultTableModel dtm = (DefaultTableModel) tableRec.getModel();
@@ -312,22 +312,9 @@ public class UIProjectViewWorker extends JFrame implements LoadListener {
 		}
 	}
 
-	private void calculateSameDevices() {
-		List<Device> pDevices = project.getDevices();
-		List<Device> ptDevices = project.getProjectTyp().getDevices();
-
-		int score = 0;
-
-		for (Device d : pDevices) {
-			if (ptDevices.contains(d))
-				score++;
-		}
-
-		valSameDevices.setText(score + "/" + pDevices.size()
-				+ " match project type");
-
-	}
-
+	/**
+	 * Label mit vergangenen Projekten setzen
+	 */
 	private void calculateOldProjects() {
 		valOldProjects.setText(Engine.getNumberOfProjectsInSameCat(project)
 				+ "/" + project.getCustomer().getProjects().size()

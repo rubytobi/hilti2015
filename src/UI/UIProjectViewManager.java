@@ -45,11 +45,13 @@ import java.util.List;
 import java.awt.Color;
 import java.awt.SystemColor;
 
+/**
+ * Die Projektansicht des Financial Officers
+ * Gibt Auskunft über die Serviceanfragen und die Empfehlung ins Flottenmanagement zu gehen
+ * !!ACHTUNG: Bisher nur testweise für einen Kunden (ID: 3) implementiert!!
+ */
 public class UIProjectViewManager extends JFrame implements LoadListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	// BROWSER
 	private final Browser browser = BrowserFactory.create();
@@ -74,7 +76,6 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.setSize(400, 600);
@@ -87,7 +88,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		getContentPane().add(pnlCenter);
 		pnlCenter.setLayout(new BoxLayout(pnlCenter, BoxLayout.Y_AXIS));
 
-		// SET THE MAP VIEW AND PAN TO LOCATION
+		// MapView Setup
 		JPanel pnlMap = new JPanel(new BorderLayout());
 		pnlMap.setPreferredSize(new Dimension(400, 200));
 		pnlCenter.add(pnlMap);
@@ -130,6 +131,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		valFleet.setFont(new Font("Tahoma", Font.BOLD, 11));
 		pnlFleet.add(valFleet);
 
+		// JTable der die Geräte an der Projektposition anzeigt
 		tableDevices = new JTable();
 		tableDevices.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Description", "PriceRetail",
@@ -147,6 +149,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		lblService.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pnlInfo.add(lblService);
 
+		// JTable der die Serviceanfragen Historie ausgibt
 		tableService = new JTable();
 		tableService.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ArtNo", "Descritpion", "Type", "Price" }));
@@ -160,6 +163,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		JPanel pnlOldProjects = new JPanel();
 		pnlInfo.add(pnlOldProjects);
 
+		// Textlabels erstellen, werden in update() richtig befüllt
 		JLabel lblDuration = new JLabel("If you plan on using these devices");
 		lblDuration.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 		lblDuration.setForeground(Color.BLACK);
@@ -195,6 +199,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 		JPanel pnlSouth = new JPanel();
 		getContentPane().add(pnlSouth, BorderLayout.SOUTH);
 
+		// Die Textlabels anpassen
 		update();
 
 		setLocationRelativeTo(null);
@@ -203,24 +208,19 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 	@Override
 	public void onDocumentLoadedInFrame(FrameLoadEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onDocumentLoadedInMainFrame(LoadEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onFailLoadingFrame(FailLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onFinishLoadingFrame(FinishLoadingEvent arg0) {
+		// Nach dem Laden der Map zur Projektposition bewegen
 		browser.executeJavaScript("map.panTo(" + "new google.maps.LatLng("
 				+ project.getLocation().getLatitude() + ","
 				+ project.getLocation().getLongitude() + ")" + ")");
@@ -229,16 +229,16 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 	@Override
 	public void onProvisionalLoadingFrame(ProvisionalLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onStartLoadingFrame(StartLoadingEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * Befüllt den JTable mit dem Projekt assoziierten Geräten
+	 * @param devices Liste der Geräte die hinzugefügt werden sollen
+	 */
 	public void addToolsToTable(List<Device> devices) {
 
 		System.out.println("LIST SIZE: " + devices.size());
@@ -248,6 +248,7 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 			model.removeRow(0);
 		}
 
+		// Speziell für den Financial Officer Preise anzeigen 
 		for (Device d : devices) {
 			model.addRow(new String[] { d.getArtNr(), d.getScope(),
 					d.getPrice() + "EUR", d.getPriceFM() + "EUR" });
@@ -255,6 +256,10 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 	}
 
+	/**
+	 * Die Servicehistorie Tabelle befüllen
+	 * @param services Liste an Services
+	 */
 	public void addServicesToTable(List<Service> services) {
 
 		System.out.println("LIST SIZE: " + services.size());
@@ -271,12 +276,14 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 	}
 
+	/**
+	 * Setzt die ganzen TextLabels mit den kalkulierten Werten
+	 */
 	public void update() {
 		valProjectType.setText(project.getProjectTyp().getDescription());
 		valLocation.setText(project.getLocation().toString());
 		addToolsToTable(project.getDevices());
 
-		// TODO
 		addServicesToTable(HILTITool.services);
 		double days = calculateBreakEvenPoint();
 		double amount = calculateFMPrice();
@@ -284,17 +291,22 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 	}
 
+	/**
+	 * Flottenmanagement Preis berechnen
+	 * @return 
+	 */
 	private double calculateFMPrice() {
 		double cost = 0;
-
-		for (Service s : HILTITool.services) {
-			cost += s.getPrice();
+		
+		for( Device d :project.getDevices()){
+			cost += d.getPriceFM();
 		}
-
+		// Gerätekosten sind nur 20% des Flottenmanagement Preises
 		cost = cost / 2 * 10;
 		return cost;
 	}
 
+	// Den BreakEven Point berechnen (Bei einer Projektdauer von < X Tagen lohnt sich das Flottenmanagement)
 	private double calculateBreakEvenPoint() {
 		double summe = 0;
 		double summeFM = 0;
@@ -309,13 +321,19 @@ public class UIProjectViewManager extends JFrame implements LoadListener {
 
 		for (Device d : project.getDevices()) {
 			summe += d.getPrice();
-			summeFM += d.getPriceFM() / 30;
+			summeFM += d.getPriceFM() / 30; // Monats- in Tagespreise
 		}
 
+		// SummePreisNormal / SummePreisFlottenmanagement 
 		return (summe + service * project.getDevices().size())
 				/ (summeFM / 2 * 10);
 	}
 
+	/**
+	 * Labels setzen
+	 * @param days
+	 * @param amount
+	 */
 	public void setCountDays(double days, double amount) {
 		days = Engine.round(days, 0);
 		amount = Engine.round(amount, 2);

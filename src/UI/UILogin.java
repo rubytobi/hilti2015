@@ -35,10 +35,13 @@ import bigData.Engine;
 import datatypes.Customer;
 import datatypes.Project;
 
+/**
+ * 
+ * Oberfläche zur Kundenauswahl und der gewünschten Rolle
+ *
+ */
 public class UILogin extends JFrame {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private ImageIcon iconManager;
@@ -57,7 +60,6 @@ public class UILogin extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.setTitle("LOGIN..");
@@ -70,11 +72,12 @@ public class UILogin extends JFrame {
 		pnlImage.setLayout(new BorderLayout(0, 0));
 		BufferedImage userManager = null;
 		BufferedImage userWorker = null;
+		// Rollenbilder laden
 		try {
 			userManager = ImageIO.read(new File("user_manager.png"));
 			userWorker = ImageIO.read(new File("user_worker.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Rollenbilder konnten nicht geladen werden");
 			e.printStackTrace();
 		}
 
@@ -94,6 +97,7 @@ public class UILogin extends JFrame {
 		JLabel lblNewLabel = new JLabel("Select Customer:");
 		panel.add(lblNewLabel);
 
+		// Combobox zur Kundenauswahl
 		comboBox = new JComboBox<String>();
 		panel.add(comboBox);
 
@@ -107,6 +111,7 @@ public class UILogin extends JFrame {
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_1.add(panel_2);
 
+		//RadioButton zur Rollenauswahl
 		JRadioButton rdbtnWorker = new JRadioButton("Worker");
 		rdbtnWorker.addItemListener(new ItemListener() {
 
@@ -144,30 +149,23 @@ public class UILogin extends JFrame {
 
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				// Bei Mausklick der Auswahl entsprechend Fenster öffnen
 				Customer customer = HILTITool.customers.get(comboBox
 						.getSelectedIndex());
 				Project p = Engine.userAtProject(customer, HILTITool.projects);
@@ -175,22 +173,13 @@ public class UILogin extends JFrame {
 						HILTITool.clusters);
 
 				if (selectedRole == ROLE_WORKER) {
-//					if (p != null) {
-//						new UIProjectViewWorker(p, null);
-//						dispose();
-//					} else if (cluster != null) {
 						new UIProjectRecognizedWorker(cluster, customer);
-						//dispose();
-					//}
 				} else if (selectedRole == ROLE_MANAGER) {
 					if (p != null) {
 						// TODO
 						new UIProjectViewManager(p, null);
-						//dispose();
 					} else if (cluster != null) {
 						// TODO
-						//new UIProjectRecognizedManager(cluster, customer);
-						//dispose();
 					}
 				}
 			}
@@ -201,6 +190,9 @@ public class UILogin extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Combobox mit Kunden befüllen
+	 */
 	public void update() {
 		List<String> customers = new ArrayList<String>();
 
