@@ -51,19 +51,22 @@ public class HILTITool {
 	}
 
 	public HILTITool() {
+		/*
+		 * Laden der Daten aus der SQLite Datenbank
+		 */
 		loadDB();
 
 		System.out.println("\n## Cluster the locations");
 		List<Cluster> clusters = Engine.clusterLocations(locations);
-
-		System.out.println("\n## Try to match known projects and clusters");
-		Engine.matchKnownLocations(clusters, projects);
 
 		System.out
 				.println("\n## Try to recognise projects and stores on moving data by devices");
 		Engine.recogniseLocations(clusters, projects);
 	}
 
+	/*
+	 * Finde einen Kunden anhand der ID
+	 */
 	public static Customer findCustomer(int id) {
 		for (Customer c : customers) {
 			if (c.getId() == id) {
@@ -74,10 +77,16 @@ public class HILTITool {
 		return null;
 	}
 
+	/*
+	 * Finde ein Gerät anhand der ID
+	 */
 	public static Device findDevice(int id) {
 		return findDevice(id, devices);
 	}
 
+	/*
+	 * Finde einen Kunden anhand der ID in dieser Liste
+	 */
 	public static Device findDevice(int id, List<Device> devices) {
 		for (Device d : devices) {
 			if (d.getId() == id) {
@@ -88,10 +97,16 @@ public class HILTITool {
 		return null;
 	}
 
+	/*
+	 * Finde ein Projekt anhand der ID
+	 */
 	public static Project findProject(int id) {
 		return findProject(id, projects);
 	}
 
+	/*
+	 * Finde ein Projekt anhand der ID in dieser Liste
+	 */
 	public static Project findProject(int id, List<Project> projects) {
 		for (Project p : projects) {
 			if (p.getId() == id) {
@@ -102,10 +117,16 @@ public class HILTITool {
 		return null;
 	}
 
+	/*
+	 * Finde einen Projekttyp anhand der ID
+	 */
 	public static ProjectTyp findProjectTyp(int id) {
 		return findProjectTyp(id, projecttypes);
 	}
 
+	/*
+	 * Finde einen PRoejttypen anhand der ID in dieser Liste
+	 */
 	public static ProjectTyp findProjectTyp(int id,
 			List<ProjectTyp> projecttypes) {
 		for (ProjectTyp pt : projecttypes) {
@@ -117,6 +138,9 @@ public class HILTITool {
 		return null;
 	}
 
+	/*
+	 * Laden der SQLite-Datenbank
+	 */
 	private void loadDB() {
 		Connection con = null;
 		try {
@@ -158,6 +182,9 @@ public class HILTITool {
 		System.out.println("Database fully loaded and linked.");
 	}
 
+	/*
+	 * Laden der GPS-Daten und JavaScript-Datei generieren
+	 */
 	private void loadMap(Connection con) throws SQLException {
 		// Locationpaare abfragen für Devices on map
 		Statement stmt = con.createStatement();
@@ -171,6 +198,9 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * Laden der vordefinierten Projekttypen
+	 */
 	private void loadProjectTyps(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT ID, Bezeichnung, AnzPersonen"
@@ -189,6 +219,10 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * Laden der Projekte und verknüpfen mit dem Kunden, den GPS-Daten und dem
+	 * Projekttyp
+	 */
 	private void loadProjects(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT Latitude, Longitude, pr.ID, KundeID, ProjektTypID, Anwendungsbereich, PositionID, AnzPersonen, EndDatum"
@@ -228,6 +262,9 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * Laden der GPS-Daten und verknüpfen mit den Geräten
+	 */
 	private void loadLocations(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT p.Latitude, p.Longitude, p.ID, g.ID AS GeraetID"
@@ -251,6 +288,9 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * Laden der Geräte und verknüpfen mit Kunde, Projekttyp und Projekt
+	 */
 	private void loadDevices(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT ID, ArtNr, Bezeichnung, Zubehoer, KundeID, ProjektTypID, ProjektID, PreisEinzel, PreisFlotte FROM Geraet";
@@ -289,6 +329,9 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * Laden der Kunden
+	 */
 	private void loadCustomers(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT Kunde.ID, AnzMitarbeiter, Flottenmgmt, Latitude, Longitude, Name FROM Kunde INNER JOIN Position ON Kunde.PositionID = Position.ID";
@@ -308,6 +351,9 @@ public class HILTITool {
 		}
 	}
 
+	/*
+	 * LAden der Srviceleistungen und verknüpfen mit Kunde, Projekt und Gerät
+	 */
 	private void loadServices(Connection con) throws SQLException {
 		Statement stmt = con.createStatement();
 		String sql = "SELECT ID, KundeID, ProjektID, GeraetID, Typ, Preis FROM Service";
